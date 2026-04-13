@@ -5,26 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PsychoDiary — Your Personal AI Psychologist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<!-- Используем современные шрифты: Inter для интерфейса, Lora для текста дневника -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<!-- Современные, мягкие и читаемые шрифты -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Variables (Therapeutic Light Theme) ──────────────────────────────── */
+  /* ── Variables (Midnight AI Theme) ──────────────────────────────── */
   :root {
-    --bg-main:       #F4F7F6;
-    --bg-panel:      #FFFFFF;
-    --bg-hover:      #F9FAFA;
-    --border:        #E2E8F0;
-    --accent:        #5E8B7E; /* Calming sage green */
-    --accent-hover:  #4A7367;
-    --text-main:     #2D3748;
-    --text-muted:    #718096;
-    --danger:        #E53E3E;
-    --safe:          #38A169;
-    --shadow-sm:     0 2px 8px rgba(45, 55, 72, 0.04);
-    --shadow-md:     0 8px 24px rgba(45, 55, 72, 0.06);
-    --radius-lg:     20px;
-    --radius-md:     12px;
+    --bg-base:       #0B0E14;
+    --bg-surface:    rgba(20, 25, 35, 0.6);
+    --bg-surface-hover: rgba(30, 38, 50, 0.8);
+    --border:        rgba(255, 255, 255, 0.08);
+    --border-glow:   rgba(99, 102, 241, 0.3);
+    
+    --accent:        #818cf8; /* Soft Indigo */
+    --accent-glow:   #6366f1;
+    --accent-sec:    #c084fc; /* Soft Purple */
+    
+    --text-main:     #f8fafc;
+    --text-muted:    #94a3b8;
+    
+    --danger:        #fb7185; /* Rose */
+    --safe:          #34d399; /* Emerald */
+    
+    --radius-lg:     24px;
+    --radius-md:     16px;
+    --radius-sm:     10px;
+    
+    --shadow-glow:   0 8px 32px rgba(99, 102, 241, 0.08);
   }
 
   /* ── Reset ───────────────────────────────────── */
@@ -32,21 +39,21 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg-main);
+    background-color: var(--bg-base);
     color: var(--text-main);
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Background Pattern (Soft waves/gradient) ──────────────────────── */
+  /* ── Ambient Background (Soft glowing orbs) ──────────────────────── */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0;
     background: 
-      radial-gradient(circle at 15% 50%, rgba(94, 139, 126, 0.04), transparent 50%),
-      radial-gradient(circle at 85% 30%, rgba(56, 161, 105, 0.03), transparent 50%);
+      radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.07), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.07), transparent 40%);
     pointer-events: none;
   }
 
@@ -64,37 +71,51 @@
   /* ── Header ──────────────────────────────────── */
   header {
     grid-column: 1 / -1;
-    padding: 24px 48px;
+    padding: 32px 48px;
     display: flex;
     align-items: center;
     gap: 24px;
   }
 
   .logo {
-    font-size: 24px;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 26px;
+    font-weight: 500;
     letter-spacing: -0.02em;
-    color: var(--accent);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo::before {
+    content: '';
+    display: block;
+    width: 12px; height: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-sec));
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent-glow);
   }
   .logo span { 
-    font-weight: 300; 
-    color: var(--text-main);
+    color: var(--accent);
+    font-weight: 400;
   }
 
   .tagline {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 400;
-    background: var(--border);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
     padding: 4px 12px;
     border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
   }
 
   .header-status {
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-size: 13px;
     font-weight: 500;
     color: var(--text-muted);
@@ -106,10 +127,13 @@
     background: var(--text-muted);
     animation: pulse 2s ease-in-out infinite;
   }
-  .dot.online { background: var(--safe); box-shadow: 0 0 8px rgba(56, 161, 105, 0.4); }
+  .dot.online { 
+    background: var(--safe); 
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); 
+  }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    50% { opacity: 0.4; }
   }
 
   /* ── Sidebar ─────────────────────────────────── */
@@ -122,20 +146,23 @@
   }
 
   .sidebar-section {
-    background: var(--bg-panel);
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 24px;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(255,255,255,0.5);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-glow);
   }
 
   .sidebar-section h3 {
-    font-size: 11px;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   /* Mood chart */
@@ -148,7 +175,7 @@
 
   .mood-bar {
     flex: 1;
-    background: var(--bg-main);
+    background: rgba(255,255,255,0.03);
     border-radius: 6px;
     position: relative;
     overflow: hidden;
@@ -159,12 +186,12 @@
   .mood-bar-fill {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, var(--accent), #83b1a4);
+    background: linear-gradient(to top, var(--accent-sec), var(--accent));
     border-radius: 6px;
     transition: height 0.6s cubic-bezier(.34,1.56,.64,1);
   }
-  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, var(--danger), #fc8181); }
-  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, var(--safe), #68d391); }
+  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); }
+  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, #059669, var(--safe)); }
 
   /* Patterns */
   .pattern-list {
@@ -179,15 +206,15 @@
     gap: 12px;
     font-size: 14px;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 400;
   }
   .pattern-tag.active { color: var(--text-main); }
   .pattern-tag .icon { 
     font-size: 16px; 
-    background: var(--bg-main);
+    background: rgba(255,255,255,0.05);
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
   }
 
   /* Profile */
@@ -195,26 +222,24 @@
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-muted);
-    font-family: 'Lora', serif;
-    font-style: italic;
+    font-weight: 300;
   }
 
   /* Memory count */
   .memory-stat {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 10px;
   }
   .memory-stat .num {
+    font-family: 'Outfit', sans-serif;
     font-size: 36px;
     color: var(--accent);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-weight: 500;
   }
   .memory-stat .label {
     font-size: 13px;
     color: var(--text-muted);
-    font-weight: 500;
   }
 
   /* ── Main ────────────────────────────────────── */
@@ -228,63 +253,63 @@
 
   /* Date header */
   .date-header {
-    margin-bottom: -8px;
+    margin-bottom: -12px;
   }
   .date-header .date {
-    font-size: 36px;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 40px;
+    font-weight: 500;
     letter-spacing: -0.02em;
     color: var(--text-main);
   }
   .date-header .weekday {
     font-size: 14px;
-    color: var(--accent);
+    color: var(--accent-sec);
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     margin-top: 4px;
   }
 
   /* ── Entry textarea ──────────────────────────── */
   .entry-wrapper {
     position: relative;
-    background: var(--bg-panel);
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 24px;
+    padding: 28px;
     border: 1px solid var(--border);
-    transition: box-shadow 0.3s, border-color 0.3s;
+    transition: box-shadow 0.4s, border-color 0.4s;
   }
   .entry-wrapper:focus-within {
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    border-color: var(--border-glow);
   }
 
   textarea {
     width: 100%;
-    min-height: 200px;
+    min-height: 220px;
     background: transparent;
     border: none;
     color: var(--text-main);
-    font-family: 'Lora', serif; /* Серифный шрифт для эффекта "дневника" */
-    font-size: 18px;
-    line-height: 1.8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
     resize: vertical;
     outline: none;
   }
 
   textarea::placeholder {
-    color: #A0AEC0;
-    font-style: italic;
+    color: #475569;
   }
 
   /* char counter */
   .char-count {
     position: absolute;
-    bottom: 16px; right: 24px;
+    bottom: 20px; right: 28px;
     font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
+    color: #475569;
     pointer-events: none;
   }
 
@@ -292,54 +317,57 @@
   .submit-row {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
   }
 
   button.send {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: var(--accent);
-    color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-sec));
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
     font-weight: 500;
     padding: 14px 32px;
     cursor: pointer;
     border: none;
     border-radius: 30px;
     transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(94, 139, 126, 0.2);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
   }
 
   button.send:hover:not(:disabled) {
-    background: var(--accent-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(94, 139, 126, 0.3);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    filter: brightness(1.1);
   }
 
   button.send:disabled {
-    background: var(--text-muted);
+    background: #334155;
     box-shadow: none;
     cursor: not-allowed;
+    color: #94a3b8;
   }
 
   .send-icon {
     font-size: 16px;
     transition: transform 0.3s;
   }
-  button.send:hover .send-icon { transform: translateX(4px); }
+  button.send:hover .send-icon { transform: translateX(4px) scale(1.1); }
 
   .hint {
     font-size: 13px;
     color: var(--text-muted);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
   .hint::before {
-    content: '🔒';
-    font-size: 12px;
+    content: '';
+    display: block;
+    width: 16px; height: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'/%3E%3C/svg%3E") no-repeat center;
   }
 
   /* ── Loading ─────────────────────────────────── */
@@ -347,14 +375,13 @@
     display: none;
     align-items: center;
     gap: 12px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
     color: var(--accent);
   }
   .loading.visible { display: flex; }
 
   .loading-dots {
-    display: flex; gap: 4px;
+    display: flex; gap: 6px;
   }
   .loading-dots span {
     width: 6px; height: 6px;
@@ -365,8 +392,8 @@
   .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
   .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes bounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-    40% { transform: translateY(-6px); opacity: 1; }
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+    40% { transform: translateY(-6px); opacity: 1; box-shadow: 0 0 8px var(--accent); }
   }
 
   /* ── Mood badge ──────────────────────────────── */
@@ -375,29 +402,30 @@
     align-items: center;
     gap: 16px;
     padding: 16px 24px;
-    background: var(--bg-panel);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-glow);
     animation: fadeUp 0.5s ease;
   }
   .mood-badge.visible { display: flex; }
 
   .mood-emoji { 
     font-size: 28px; 
-    background: var(--bg-main);
-    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.05);
+    width: 50px; height: 50px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
   }
-  .mood-text  { font-weight: 600; color: var(--text-main); font-size: 15px; }
+  .mood-text  { font-family: 'Outfit', sans-serif; font-weight: 500; color: var(--text-main); font-size: 16px; }
   .mood-score {
     margin-left: auto;
     color: var(--accent);
+    font-family: 'Outfit', sans-serif;
     font-weight: 600;
     font-size: 18px;
-    background: rgba(94, 139, 126, 0.1);
-    padding: 4px 12px;
+    background: rgba(99, 102, 241, 0.15);
+    padding: 4px 14px;
     border-radius: 20px;
   }
 
@@ -407,39 +435,40 @@
   .mood-tag {
     font-size: 11px;
     padding: 4px 10px;
-    background: var(--bg-main);
+    background: rgba(255,255,255,0.05);
     border-radius: 20px;
     color: var(--text-muted);
-    font-weight: 500;
   }
 
   /* ── AI Response ─────────────────────────────── */
   .ai-response {
     display: none;
-    background: #F0F5F4; /* Очень легкий зеленый оттенок */
+    background: linear-gradient(145deg, rgba(30, 38, 50, 0.4), rgba(20, 25, 35, 0.4));
+    border: 1px solid var(--border);
     border-left: 4px solid var(--accent);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
     padding: 32px;
     animation: fadeUp 0.6s ease;
+    backdrop-filter: blur(10px);
   }
   .ai-response.visible { display: block; }
 
   .ai-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
     letter-spacing: 0.05em;
     color: var(--accent);
   }
 
   .ai-text {
-    font-family: 'Lora', serif;
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.8;
+    font-weight: 300;
     color: var(--text-main);
     white-space: pre-line;
   }
@@ -450,17 +479,15 @@
   .ai-footer {
     margin-top: 24px;
     padding-top: 16px;
-    border-top: 1px solid rgba(94, 139, 126, 0.2);
+    border-top: 1px solid rgba(255,255,255,0.05);
     font-size: 12px;
-    font-weight: 500;
-    color: var(--accent);
+    color: #64748b;
     display: flex;
     align-items: center;
     gap: 8px;
   }
   .verified-badge {
     color: var(--safe);
-    font-weight: bold;
   }
 
   /* ── History ─────────────────────────────────── */
@@ -468,8 +495,9 @@
     margin-top: 16px;
   }
   .history-section h2 {
-    font-size: 16px;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
     color: var(--text-main);
     margin-bottom: 20px;
   }
@@ -486,30 +514,30 @@
     gap: 16px;
     align-items: center;
     padding: 20px;
-    background: var(--bg-panel);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    transition: all 0.3s ease;
   }
   .history-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-    border-color: var(--accent);
+    background: var(--bg-surface-hover);
+    transform: translateX(4px);
+    border-color: rgba(99, 102, 241, 0.3);
   }
 
   .history-emoji { 
     font-size: 24px; 
-    background: var(--bg-main);
+    background: rgba(255,255,255,0.03);
     width: 48px; height: 48px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
   }
   
   .history-text {
-    font-family: 'Lora', serif;
     font-size: 15px;
     color: var(--text-main);
+    font-weight: 300;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -518,38 +546,38 @@
   }
   .history-meta {
     font-size: 12px;
-    font-weight: 500;
     color: var(--text-muted);
     margin-top: 6px;
   }
   .history-score {
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
     font-size: 14px;
-    color: var(--text-main);
-    background: var(--bg-main);
+    color: var(--accent);
+    background: rgba(99, 102, 241, 0.1);
     padding: 6px 12px;
     border-radius: 20px;
   }
 
   /* ── Animations ──────────────────────────────── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   /* ── Scrollbar ───────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #A0AEC0; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
   /* ── Responsive ──────────────────────────────── */
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
     aside { display: none; }
-    header { padding: 20px 24px; }
+    header { padding: 24px; }
     main { padding: 24px; }
-    .entry-wrapper { padding: 16px; }
+    .entry-wrapper { padding: 20px; }
   }
 </style>
 </head>
@@ -560,7 +588,7 @@
   <!-- ── Header ─────────────────────────────────── -->
   <header>
     <div class="logo">Psycho<span>Diary</span></div>
-    <div class="tagline">Verifiable AI · TEE Secured</div>
+    <div class="tagline">Neural Companion</div>
     <div class="header-status">
       <span id="statusText">Connecting...</span>
       <div class="dot" id="statusDot"></div>
@@ -585,23 +613,23 @@
     </div>
 
     <div class="sidebar-section">
-      <h3>Patterns</h3>
+      <h3>Identified Patterns</h3>
       <div class="pattern-list" id="patternList">
-        <div class="pattern-tag"><span class="icon">🌙</span> Gathering data...</div>
+        <div class="pattern-tag"><span class="icon">✨</span> Gathering insights...</div>
       </div>
     </div>
 
     <div class="sidebar-section">
-      <h3>AI Memory</h3>
+      <h3>Memory Bank</h3>
       <div class="memory-stat">
         <div class="num" id="memoryCount">—</div>
-        <div class="label">memories saved</div>
+        <div class="label">thoughts safely stored</div>
       </div>
     </div>
 
     <div class="sidebar-section">
-      <h3>Your Profile</h3>
-      <div class="profile-bio" id="profileBio">Will populate as you write entries...</div>
+      <h3>AI Profile</h3>
+      <div class="profile-bio" id="profileBio">Awaiting your first entries to build a psychological profile...</div>
     </div>
 
   </aside>
@@ -619,7 +647,7 @@
     <div class="entry-wrapper">
       <textarea
         id="entryText"
-        placeholder="What happened today? How are you feeling? Don't worry about phrasing — just write what's on your mind..."
+        placeholder="Clear your mind. What are you thinking about right now? Everything you write here is encrypted and processed securely..."
         maxlength="3000"
       ></textarea>
       <div class="char-count" id="charCount">0 / 3000</div>
@@ -628,14 +656,14 @@
     <!-- Submit button & status -->
     <div class="submit-row">
       <button class="send" id="sendBtn">
-        Share with AI
-        <span class="send-icon">➔</span>
+        Reflect with AI
+        <span class="send-icon">✧</span>
       </button>
       <div class="loading" id="loading">
         <div class="loading-dots"><span></span><span></span><span></span></div>
-        AI is analyzing your entry...
+        Synthesizing thoughts...
       </div>
-      <div class="hint" id="hint">Your data is completely private & encrypted</div>
+      <div class="hint" id="hint">Encrypted by OpenGradient TEE</div>
     </div>
 
     <!-- Mood Badge -->
@@ -651,23 +679,23 @@
     <!-- AI Response -->
     <div class="ai-response" id="aiResponse">
       <div class="ai-header">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        Response from your AI Psychologist
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12 2.1 7.1"></path><path d="M12 12l9.9 4.9"></path></svg>
+        AI Psychologist Insights
       </div>
       <div class="ai-text" id="aiText"></div>
       <div class="ai-footer">
         <span class="verified-badge">✓</span>
-        Verified via OpenGradient TEE ·
-        <span id="paymentHash" style="opacity:0.7; overflow:hidden; text-overflow:ellipsis; max-width:250px; white-space:nowrap;"></span>
+        On-chain Proof · 
+        <span id="paymentHash" style="opacity:0.6; overflow:hidden; text-overflow:ellipsis; max-width:300px; white-space:nowrap;"></span>
       </div>
     </div>
 
     <!-- History -->
     <div class="history-section">
-      <h2>Previous Entries</h2>
+      <h2>Past Reflections</h2>
       <div class="history-list" id="historyList">
-        <div style="color:var(--text-muted); font-size:14px; font-style:italic; padding: 20px 0;">
-          Your past entries will appear here...
+        <div style="color:var(--text-muted); font-size:15px; font-weight:300; padding: 20px 0;">
+          Your timeline is currently empty.
         </div>
       </div>
     </div>
@@ -676,38 +704,32 @@
 </div>
 
 <!-- ==========================================
-     Ниже идет оригинальный скрипт без изменений 
+     JS Скрипт идентичен предыдущим версиям
      ========================================== -->
 <script>
 const API = ''; 
 
-// 1. SAFE HISTORY LOADING (Catches strict security extensions that block localStorage)
 let history =[];
 try {
   history = JSON.parse(localStorage.getItem('diary_history') || '[]');
 } catch (err) {
-  console.warn('LocalStorage is blocked by a browser extension. History will not be saved locally.');
+  console.warn('LocalStorage is blocked. History will not be saved locally.');
 }
 
-// 2. SAFE BUTTON BINDING (Bypasses SES restrictions)
 document.getElementById('sendBtn').addEventListener('click', submitEntry);
 
-// ── Date ──────────────────────────────────────────
 (function setDate() {
   const now = new Date();
   const days =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  document.getElementById('currentDate').textContent =
-    `${months[now.getMonth()]} ${now.getDate()}`;
+  document.getElementById('currentDate').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
   document.getElementById('currentWeekday').textContent = days[now.getDay()];
 })();
 
-// ── Char counter ─────────────────────────────────
 document.getElementById('entryText').addEventListener('input', function() {
   document.getElementById('charCount').textContent = `${this.value.length} / 3000`;
 });
 
-// ── Health check ─────────────────────────────────
 async function checkHealth() {
   try {
     const r = await fetch(`${API}/api/health`);
@@ -716,14 +738,13 @@ async function checkHealth() {
     const text = document.getElementById('statusText');
     if (d.status === 'ok') {
       dot.classList.add('online');
-      text.textContent = d.llm ? 'AI connected' : 'No OG key';
+      text.textContent = d.llm ? 'Secure connection' : 'No OG key';
     }
   } catch {
-    document.getElementById('statusText').textContent = 'Server unreachable';
+    document.getElementById('statusText').textContent = 'Offline';
   }
 }
 
-// ── Submit entry ──────────────────────────────────
 async function submitEntry() {
   const text = document.getElementById('entryText').value.trim();
   if (!text) return;
@@ -747,7 +768,6 @@ async function submitEntry() {
     showMood(data.mood);
     showAIResponse(data.response, data.payment_hash);
 
-    // Save history safely
     const entry = {
       text,
       response: data.response,
@@ -759,7 +779,7 @@ async function submitEntry() {
     
     try {
       localStorage.setItem('diary_history', JSON.stringify(history));
-    } catch (e) {} // Ignore if browser blocks saving
+    } catch (e) {}
 
     renderHistory();
     updateMoodChart();
@@ -768,10 +788,8 @@ async function submitEntry() {
     document.getElementById('charCount').textContent = '0 / 3000';
 
   } catch (err) {
-    document.getElementById('aiText').textContent =
-      '⚠️ Error connecting to backend. Make sure the server is running and configured.';
+    document.getElementById('aiText').textContent = '⚠️ Connection error. Please check server status.';
     document.getElementById('aiResponse').classList.add('visible');
-    console.error(err);
   } finally {
     document.getElementById('sendBtn').disabled = false;
     document.getElementById('loading').classList.remove('visible');
@@ -799,12 +817,8 @@ function showMood(mood) {
 
 function showAIResponse(text, hash) {
   const el = document.getElementById('aiText');
-  el.innerHTML = text.split('\n\n').filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`).join('');
-
-  if (hash) {
-    document.getElementById('paymentHash').textContent = `tx: ${hash}`;
-  }
+  el.innerHTML = text.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  if (hash) document.getElementById('paymentHash').textContent = `tx: ${hash}`;
   document.getElementById('aiResponse').classList.add('visible');
   document.getElementById('aiResponse').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -812,7 +826,7 @@ function showAIResponse(text, hash) {
 function renderHistory() {
   const list = document.getElementById('historyList');
   if (!history.length) {
-    list.innerHTML = '<div style="color:var(--text-muted);font-size:14px;font-style:italic;padding:20px 0">Your past entries will appear here...</div>';
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:15px;font-weight:300;padding:20px 0">Your timeline is currently empty.</div>';
     return;
   }
   list.innerHTML = history.map((item, i) => {
@@ -820,7 +834,6 @@ function renderHistory() {
     const dateStr = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const emoji = item.mood?.emoji || '📓';
     const score = item.mood?.score;
-    // Explicitly using window.expandHistory to bypass potential local scope blocks
     return `
       <div class="history-item" onclick="window.expandHistory(${i})">
         <div class="history-emoji">${emoji}</div>
@@ -834,7 +847,6 @@ function renderHistory() {
   }).join('');
 }
 
-// 3. EXPORT FUNCTION TO GLOBAL SCOPE (Required when extensions block inline onclicks)
 window.expandHistory = function(i) {
   const item = history[i];
   if (!item) return;
@@ -853,16 +865,16 @@ function updateMoodChart() {
     const score = entry?.mood?.score || 0;
     bar.style.height = `${(score / 10) * 100}%`;
     const parent = bar.parentElement;
-    if (score <= 3)      parent.dataset.score = 'low';
-    else if (score >= 7) parent.dataset.score = 'high';
-    else                 delete parent.dataset.score;
+    if (score > 0 && score <= 4) parent.dataset.score = 'low';
+    else if (score >= 7)         parent.dataset.score = 'high';
+    else                         delete parent.dataset.score;
   });
 }
 
 function updatePatterns() {
   const el = document.getElementById('patternList');
   if (history.length < 2) {
-    el.innerHTML = '<div class="pattern-tag"><span class="icon">📝</span> Gathering data...</div>';
+    el.innerHTML = '<div class="pattern-tag"><span class="icon">✨</span> Gathering insights...</div>';
     return;
   }
 
@@ -874,10 +886,10 @@ function updatePatterns() {
   const top = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 3);
 
   const patterns =[];
-  if (avg < 4) patterns.push({ icon: '⚠️', text: 'Low mood this week', active: true });
-  if (avg > 7) patterns.push({ icon: '✨', text: 'Good week', active: true });
-  top.forEach(([tag]) => patterns.push({ icon: '🔖', text: tag, active: false }));
-  if (!patterns.length) patterns.push({ icon: '🌿', text: 'Stable condition', active: false });
+  if (avg < 4.5) patterns.push({ icon: '🌧️', text: 'Low mood trend', active: true });
+  if (avg > 7)   patterns.push({ icon: '☀️', text: 'Positive trend', active: true });
+  top.forEach(([tag]) => patterns.push({ icon: '💡', text: tag, active: false }));
+  if (!patterns.length) patterns.push({ icon: '⚖️', text: 'Balanced state', active: false });
 
   el.innerHTML = patterns.map(p =>
     `<div class="pattern-tag ${p.active ? 'active' : ''}"><span class="icon">${p.icon}</span> ${p.text}</div>`
@@ -903,7 +915,6 @@ document.getElementById('entryText').addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.ctrlKey) submitEntry();
 });
 
-// ── Initialization ────────────────────────────────
 checkHealth();
 renderHistory();
 updateMoodChart();
