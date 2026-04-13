@@ -196,10 +196,7 @@
         <div id="patternList"></div>
       </div>
     </div>
-    <div class="widget full">
-      <div class="widget-header">AI Profile Analysis</div>
-      <div class="profile-bio" id="profileBio">Awaiting more data to analyze your personality profile...</div>
-    </div>
+    <!-- Блок AI Profile Analysis удален -->
   </aside>
 </div>
 
@@ -215,7 +212,6 @@ function escapeHtml(str) {
   return str ? str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
 }
 
-// Инициализация дней
 (function init() {
   const now = new Date();
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -275,7 +271,7 @@ function updateUI() {
   renderHistory();
   updateMoodChart();
   updatePatterns();
-  loadProfile();
+  // Вызов loadProfile удален
 }
 
 function updateMoodChart() {
@@ -334,13 +330,6 @@ function updatePatterns() {
   const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 2);
   
   list.innerHTML = top.length ? top.map(([tag]) => `<div class="pattern-tag"><span>💡</span> ${tag}</div>`).join('') : '<div style="font-size:12px; opacity:0.5">Need more entries...</div>';
-}
-
-async function loadProfile() {
-  try {
-    const r = await fetch(`${API}/api/profile`); const d = await r.json();
-    if(d.bio) document.getElementById('profileBio').textContent = d.bio;
-  } catch(e) {}
 }
 
 async function checkHealth() {
