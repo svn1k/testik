@@ -54,11 +54,11 @@
     pointer-events: none;
   }
 
-  /* ── Layout (Изменено: Главная слева, Виджеты справа) ──────────────────────────────────── */
+  /* ── Layout ──────────────────────────────────── */
   .layout {
     position: relative; z-index: 1;
     display: grid;
-    grid-template-columns: 1fr 380px; /* Дневник занимает максимум, панель виджетов 380px */
+    grid-template-columns: 1fr 380px; 
     grid-template-rows: auto 1fr;
     gap: 0 48px;
     min-height: 100vh;
@@ -126,33 +126,41 @@
     text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
   }
 
-  .entry-wrapper {
+  /* Multi-day Inputs */
+  .multi-day-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .day-wrapper {
     position: relative;
     background: var(--bg-surface);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border-radius: var(--radius-xl);
-    padding: 32px;
+    padding: 24px 32px;
     border: 1px solid var(--border);
     border-top: 1px solid var(--border-light);
     transition: box-shadow 0.4s, border-color 0.4s;
   }
-  .entry-wrapper:focus-within {
+  .day-wrapper:focus-within {
     box-shadow: 0 12px 40px rgba(99, 102, 241, 0.1);
     border-color: rgba(99, 102, 241, 0.3);
   }
 
-  textarea {
-    width: 100%; min-height: 240px; background: transparent; border: none;
+  .day-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px; font-weight: 500; color: var(--accent);
+    margin-bottom: 12px; display: flex; align-items: center;
+  }
+
+  .day-wrapper textarea {
+    width: 100%; min-height: 100px; background: transparent; border: none;
     color: var(--text-main); font-family: 'DM Sans', sans-serif;
-    font-size: 18px; font-weight: 300; line-height: 1.7;
+    font-size: 16px; font-weight: 300; line-height: 1.6;
     resize: vertical; outline: none;
   }
-  textarea::placeholder { color: #475569; }
-
-  .char-count {
-    position: absolute; bottom: 24px; right: 32px;
-    font-size: 12px; color: #475569; pointer-events: none;
-  }
+  .day-wrapper textarea::placeholder { color: #475569; }
 
   .submit-row { display: flex; align-items: center; gap: 24px; }
 
@@ -170,7 +178,7 @@
   .send-icon { font-size: 16px; transition: transform 0.3s; }
   button.send:hover .send-icon { transform: translateX(4px) scale(1.1); }
 
-  /* ── Dashboard / Widgets (Переработано!) ─────────────────────────────────── */
+  /* ── Dashboard / Widgets ─────────────────────────────────── */
   aside.dashboard {
     display: flex;
     flex-direction: column;
@@ -178,7 +186,6 @@
     padding-bottom: 48px;
   }
 
-  /* Сетка для виджетов 2x2 */
   .widget-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -211,7 +218,6 @@
     margin-bottom: 20px;
   }
 
-  /* Виджет: Настроение */
   .mood-chart {
     display: flex; align-items: flex-end; gap: 10px; height: 80px; width: 100%;
   }
@@ -228,7 +234,6 @@
   .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); box-shadow: 0 -4px 12px rgba(251, 113, 133, 0.3); }
   .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, #059669, var(--safe)); box-shadow: 0 -4px 12px rgba(52, 211, 153, 0.3); }
 
-  /* Виджет: Память (Memory Bank) */
   .memory-stat { display: flex; flex-direction: column; justify-content: center; height: 100%; }
   .memory-stat .num {
     font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 600; line-height: 1;
@@ -238,7 +243,6 @@
   }
   .memory-stat .label { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
 
-  /* Виджет: Паттерны */
   .pattern-list { display: flex; flex-direction: column; gap: 12px; }
   .pattern-tag {
     display: flex; align-items: center; gap: 12px;
@@ -247,7 +251,6 @@
   }
   .pattern-tag .icon { font-size: 16px; }
 
-  /* Виджет: Профиль */
   .profile-bio {
     font-size: 14px; line-height: 1.6; color: var(--text-muted); font-weight: 300;
   }
@@ -257,7 +260,7 @@
     margin-right: 8px; animation: pulse 2s infinite;
   }
 
-  /* ── AI Response & History (Оставлено как в Midnight Theme, но адаптировано) ─────────────────────────────── */
+  /* ── AI Response & History ─────────────────────────────── */
   .ai-response {
     display: none;
     background: linear-gradient(145deg, rgba(30, 38, 50, 0.4), rgba(20, 25, 35, 0.4));
@@ -298,7 +301,6 @@
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ── Responsive ──────────────────────────────── */
   @media (max-width: 1024px) {
     .layout { grid-template-columns: 1fr; padding: 0 24px; }
     aside.dashboard { grid-row: 2; margin-top: 40px; }
@@ -314,7 +316,6 @@
 
 <div class="layout">
 
-  <!-- ── Header ─────────────────────────────────── -->
   <header>
     <div class="logo">Psycho<span>Diary</span></div>
     <div class="header-status">
@@ -323,25 +324,18 @@
     </div>
   </header>
 
-  <!-- ── Main (Дневник) ───────────────────────────────────── -->
   <main>
     <div class="date-header">
       <div class="date" id="currentDate"></div>
-      <div class="weekday" id="currentWeekday"></div>
+      <div class="weekday" id="currentWeekday">Weekly Reflection</div>
     </div>
 
-    <div class="entry-wrapper">
-      <textarea
-        id="entryText"
-        placeholder="Clear your mind. What are you thinking about right now? Everything you write here is encrypted and processed securely..."
-        maxlength="3000"
-      ></textarea>
-      <div class="char-count" id="charCount">0 / 3000</div>
-    </div>
+    <!-- Контейнер для нескольких дней генерируется через JS -->
+    <div id="multiDayContainer" class="multi-day-container"></div>
 
     <div class="submit-row">
       <button class="send" id="sendBtn">
-        Reflect with AI
+        Analyze My Week
         <span class="send-icon">✧</span>
       </button>
     </div>
@@ -362,10 +356,7 @@
     </div>
   </main>
 
-  <!-- ── Dashboard Widgets (Справа) ────────────────────────────────── -->
   <aside class="dashboard">
-    
-    <!-- График настроения (Широкий) -->
     <div class="widget full">
       <div class="widget-header">Weekly Mood</div>
       <div class="mood-chart" id="moodChart">
@@ -380,7 +371,6 @@
     </div>
 
     <div class="widget-grid">
-      <!-- Память (Квадратный) -->
       <div class="widget">
         <div class="widget-header">Memory Bank</div>
         <div class="memory-stat">
@@ -389,7 +379,6 @@
         </div>
       </div>
 
-      <!-- Паттерны (Квадратный) -->
       <div class="widget">
         <div class="widget-header">Patterns</div>
         <div class="pattern-list" id="patternList">
@@ -398,7 +387,6 @@
       </div>
     </div>
 
-    <!-- Профиль ИИ (Широкий) -->
     <div class="widget full">
       <div class="widget-header">
         <span class="ai-indicator"></span> AI Profile Analysis
@@ -407,15 +395,11 @@
         Awaiting your first entries to build a psychological profile. Write your thoughts to let the AI understand you better...
       </div>
     </div>
-
   </aside>
 
 </div>
 
 <script>
-// ==========================================
-// Логика оставлена без изменений для совместимости
-// ==========================================
 const API = ''; 
 
 let history =[];
@@ -423,17 +407,36 @@ try { history = JSON.parse(localStorage.getItem('diary_history') || '[]'); } cat
 
 document.getElementById('sendBtn').addEventListener('click', submitEntry);
 
-(function setDate() {
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+(function initDateAndInputs() {
   const now = new Date();
-  const days =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   document.getElementById('currentDate').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
-  document.getElementById('currentWeekday').textContent = days[now.getDay()];
-})();
+  
+  // Генерация блоков для дней недели
+  const container = document.getElementById('multiDayContainer');
+  const jsDay = now.getDay();
+  const adjustedDay = jsDay === 0 ? 6 : jsDay - 1; // Пн = 0, Вс = 6
+  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-document.getElementById('entryText').addEventListener('input', function() {
-  document.getElementById('charCount').textContent = `${this.value.length} / 3000`;
-});
+  let html = '';
+  for(let i = 0; i <= adjustedDay; i++) {
+    const day = weekDays[i];
+    const isToday = (i === adjustedDay);
+    const labelToday = isToday ? '<span style="opacity:0.5; font-size:12px; margin-left:8px;">(Today)</span>' : '';
+    
+    html += `
+      <div class="day-wrapper">
+        <div class="day-label">${day} ${labelToday}</div>
+        <textarea class="day-input" data-day="${day}" placeholder="How did you feel on ${day}? What happened?"></textarea>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+})();
 
 async function checkHealth() {
   try {
@@ -449,14 +452,26 @@ async function checkHealth() {
 }
 
 async function submitEntry() {
-  const text = document.getElementById('entryText').value.trim();
-  if (!text) return;
+  const inputs = document.querySelectorAll('.day-input');
+  let combinedText = '';
+  let hasContent = false;
+
+  inputs.forEach(input => {
+    const val = input.value.trim();
+    if (val) {
+      hasContent = true;
+      combinedText += `--- ${input.dataset.day} ---\n${val}\n\n`;
+    }
+  });
+
+  if (!hasContent) return;
+
   document.getElementById('sendBtn').disabled = true;
   document.getElementById('sendBtn').innerHTML = 'Synthesizing...';
 
   try {
     const resp = await fetch(`${API}/api/entry`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text })
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: combinedText })
     });
     if (!resp.ok) throw new Error();
     const data = await resp.json();
@@ -465,20 +480,19 @@ async function submitEntry() {
     el.innerHTML = data.response.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
     document.getElementById('aiResponse').classList.add('visible');
 
-    const entry = { text, response: data.response, mood: data.mood, timestamp: new Date().toISOString() };
+    const entry = { text: combinedText, response: data.response, mood: data.mood, timestamp: new Date().toISOString() };
     history.unshift(entry);
     if (history.length > 30) history.pop();
     try { localStorage.setItem('diary_history', JSON.stringify(history)); } catch (e) {}
 
     renderHistory(); updateMoodChart();
-    document.getElementById('entryText').value = '';
-    document.getElementById('charCount').textContent = '0 / 3000';
+    inputs.forEach(input => input.value = ''); // Очистка
   } catch (err) {
     document.getElementById('aiText').textContent = '⚠️ Connection error.';
     document.getElementById('aiResponse').classList.add('visible');
   } finally {
     document.getElementById('sendBtn').disabled = false;
-    document.getElementById('sendBtn').innerHTML = 'Reflect with AI <span class="send-icon">✧</span>';
+    document.getElementById('sendBtn').innerHTML = 'Analyze My Week <span class="send-icon">✧</span>';
   }
 }
 
@@ -492,7 +506,7 @@ function renderHistory() {
       <div class="history-item" onclick="window.expandHistory(${i})">
         <div class="history-emoji">${item.mood?.emoji || '📓'}</div>
         <div class="history-content">
-          <div class="history-text">${item.text.replace(/</g,'&lt;')}</div>
+          <div class="history-text">${escapeHtml(item.text).replace(/---/g, '')}</div>
           <div class="history-meta">${dateStr} · ${item.mood?.mood || ''}</div>
         </div>
       </div>`;
@@ -502,10 +516,19 @@ function renderHistory() {
 window.expandHistory = function(i) {
   const item = history[i];
   if (!item) return;
-  document.getElementById('entryText').value = item.text;
-  document.getElementById('charCount').textContent = `${item.text.length} / 3000`;
+  
   const el = document.getElementById('aiText');
-  el.innerHTML = item.response.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  
+  // Так как полей ввода много, мы показываем историю прямо в блоке ответа ИИ
+  const userTextHTML = `
+    <div style="color: var(--text-muted); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+      <div style="font-family:'Outfit'; color:var(--accent); margin-bottom: 12px; font-weight: 500;">Your Past Reflection:</div>
+      <div style="white-space: pre-line; font-size: 15px; line-height: 1.6;">${escapeHtml(item.text)}</div>
+    </div>
+  `;
+  const aiHTML = item.response.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  
+  el.innerHTML = userTextHTML + aiHTML;
   document.getElementById('aiResponse').classList.add('visible');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

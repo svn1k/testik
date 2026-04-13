@@ -9,13 +9,11 @@ import requests
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
-# Изменено: убраны static_folder и static_url_path
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/')
 def index():
-    # Изменено: отдает index.html из текущей директории (рядом со скриптом)
     return send_file('index.html')
 
 # ─── Configuration ──────────────────────────────────────────────
@@ -27,7 +25,6 @@ LLM_MODEL        = og.TEE_LLM.GPT_4_1_2025_04_14
 # ─── LLM Initialization ─────────────────────────────────────────
 llm = og.LLM(private_key=OG_PRIVATE_KEY)
 
-# One-time token approval (called on startup)
 def init_approval():
     try:
         llm.ensure_opg_approval(0.1)
@@ -43,12 +40,11 @@ def memsync_headers():
     }
 
 def save_memory(user_text: str, ai_response: str):
-    """Saves entry + AI response to MemSync long-term memory."""
     if not MEMSYNC_API_KEY:
         return None
     data = {
         "messages": [
-            {"role": "user",      "content": f"Diary entry: {user_text}"},
+            {"role": "user",      "content": f"Multi-day diary entries:\n{user_text}"},
             {"role": "assistant", "content": ai_response}
         ],
         "agent_id":  "psych-diary",
@@ -64,7 +60,6 @@ def save_memory(user_text: str, ai_response: str):
         return None
 
 def search_memories(query: str, limit: int = 5):
-    """Searches relevant memories to personalize the response."""
     if not MEMSYNC_API_KEY:
         return []
     data = {"query": query, "limit": limit, "rerank": True}
@@ -78,7 +73,6 @@ def search_memories(query: str, limit: int = 5):
         return []
 
 def get_user_profile():
-    """Fetches user profile from MemSync."""
     if not MEMSYNC_API_KEY:
         return {}
     try:
@@ -105,22 +99,22 @@ async def ai_respond(entry_text: str, memories: list) -> str:
             "role": "system",
             "content": (
                 "You are a warm, attentive psychological diary assistant. "
-                "Your task: analyze user entries, reflect their emotions, "
-                "notice patterns (anxiety, fatigue, joy, stress) and give "
+                "The user will provide a reflection spanning multiple days of the current week. "
+                "Your task: analyze the progression of their emotions across these days, "
+                "notice patterns (anxiety, fatigue, joy, stress), reflect their feelings, and give "
                 "gentle, concrete advice. Rules:\n"
                 "- Answer only in English\n"
                 "- Be empathetic and non-judgmental\n"
-                "- Name emotions directly\n"
-                "- If you notice worrying patterns over several days, gently point it out\n"
-                "- Give 1-2 practical tips\n"
+                "- Mention specific days if relevant (e.g. 'I noticed you felt exhausted on Tuesday...')\n"
+                "- Give 1-2 practical tips for the upcoming days\n"
                 "- Use the context of past entries for personalization\n"
-                "- Response structure: [Reflect feelings] -> [Analyze pattern] -> [Advice]\n"
+                "- Response structure: [Analyze the week's progression] -> [Reflect key emotions] -> [Advice]\n"
                 "- Length: 3-5 paragraphs"
             )
         },
         {
             "role": "user",
-            "content": f"{context}Today's entry:\n{entry_text}"
+            "content": f"{context}This week's entries:\n{entry_text}"
         }
     ]
     result = await llm.chat(model=LLM_MODEL, messages=messages, max_tokens=600, temperature=0.7)
@@ -131,8 +125,8 @@ async def ai_mood(entry_text: str) -> dict:
         {
             "role": "user",
             "content": (
-                f"Analyze the mood of this diary entry.\n"
-                f"Text: {entry_text}\n\n"
+                f"Analyze the overall mood of these multi-day diary entries.\n"
+                f"Text:\n{entry_text}\n\n"
                 f"Reply ONLY with valid JSON without explanations:\n"
                 f'{{\"mood\": \"one word in english\", \"score\": number from 1 to 10, '
                 f'\"emoji\": \"one emoji\", \"tags\": [\"tag1\", \"tag2\"]}}'
@@ -150,16 +144,13 @@ async def ai_mood(entry_text: str) -> dict:
 # ─── Routes ─────────────────────────────────────────────────────
 @app.route("/api/entry", methods=["POST"])
 def new_entry():
-    """Receives a diary entry, returns AI response + mood analysis."""
     body = request.get_json(force=True)
     text = (body.get("text") or "").strip()
     if not text:
         return jsonify({"error": "Entry text is empty"}), 400
 
-    # Search context from past entries
     memories = search_memories(text)
 
-    # Run both LLM requests in parallel
     async def run_all():
         response_task = ai_respond(text, memories)
         mood_task     = ai_mood(text)
@@ -167,7 +158,6 @@ def new_entry():
 
     ai_text, mood_data = asyncio.run(run_all())
 
-    # Save to long-term memory
     save_memory(text, ai_text)
 
     return jsonify({
@@ -179,13 +169,11 @@ def new_entry():
 
 @app.route("/api/profile", methods=["GET"])
 def profile():
-    """Returns user psychological profile from MemSync."""
     data = get_user_profile()
     return jsonify(data)
 
 @app.route("/api/memories", methods=["GET"])
 def memories():
-    """Search memories by query."""
     query = request.args.get("q", "user mood")
     mems  = search_memories(query, limit=10)
     return jsonify({"memories": mems})
@@ -199,7 +187,6 @@ def health():
         "time":     datetime.now().isoformat()
     })
 
-# ─── Start ──────────────────────────────────────────────────────
 if __name__ == "__main__":
     init_approval()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
