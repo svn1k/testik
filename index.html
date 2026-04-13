@@ -8,43 +8,33 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Variables (Midnight Glassmorphism) ──────────────────────────────── */
   :root {
     --bg-base:       #0A0D14;
     --bg-surface:    rgba(25, 30, 42, 0.4);
     --bg-card:       linear-gradient(145deg, rgba(30, 38, 55, 0.5), rgba(15, 20, 30, 0.5));
     --border:        rgba(255, 255, 255, 0.06);
     --border-light:  rgba(255, 255, 255, 0.12);
-    
     --accent:        #818cf8; 
     --accent-sec:    #c084fc; 
     --accent-glow:   rgba(129, 140, 248, 0.4);
-    
     --text-main:     #f8fafc;
     --text-muted:    #94a3b8;
-    
     --danger:        #fb7185; 
     --safe:          #34d399; 
-    
     --radius-xl:     28px;
     --radius-lg:     20px;
     --radius-md:     14px;
   }
 
-  /* ── Reset ───────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
   body {
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Ambient Background ──────────────────────── */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0;
@@ -54,26 +44,22 @@
     pointer-events: none;
   }
 
-  /* ── Layout ──────────────────────────────────── */
   .layout {
     position: relative; z-index: 1;
     display: grid;
     grid-template-columns: 1fr 380px; 
     grid-template-rows: auto 1fr;
     gap: 0 48px;
-    min-height: 100vh;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 48px;
   }
 
-  /* ── Header ──────────────────────────────────── */
   header {
     grid-column: 1 / -1;
     padding: 32px 0;
     display: flex;
     align-items: center;
-    gap: 24px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 32px;
   }
@@ -82,7 +68,6 @@
     font-family: 'Outfit', sans-serif;
     font-size: 26px;
     font-weight: 500;
-    letter-spacing: -0.02em;
     color: var(--text-main);
     display: flex; align-items: center; gap: 10px;
   }
@@ -93,229 +78,72 @@
     border-radius: 50%;
     box-shadow: 0 0 16px var(--accent-glow);
   }
-  .logo span { color: var(--accent); font-weight: 400; }
 
   .header-status {
     margin-left: auto;
     display: flex; align-items: center; gap: 10px;
-    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    font-size: 13px; color: var(--text-muted);
   }
 
-  .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--text-muted); animation: pulse 2s ease-in-out infinite;
-  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
   .dot.online { background: var(--safe); box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  /* ── Main (Дневник) ────────────────────────────────────── */
-  main {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    padding-bottom: 48px;
-  }
+  main { display: flex; flex-direction: column; gap: 32px; padding-bottom: 48px; }
 
   .date-header { margin-bottom: -12px; }
-  .date-header .date {
-    font-family: 'Outfit', sans-serif; font-size: 44px; font-weight: 500;
-    letter-spacing: -0.02em; color: var(--text-main);
-  }
-  .date-header .weekday {
-    font-size: 14px; color: var(--accent-sec); font-weight: 500;
-    text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
-  }
+  .date-header .date { font-family: 'Outfit', sans-serif; font-size: 44px; font-weight: 500; color: var(--text-main); }
+  .date-header .weekday { font-size: 14px; color: var(--accent-sec); font-weight: 500; text-transform: uppercase; }
 
-  /* Multi-day Inputs */
-  .multi-day-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
+  .multi-day-container { display: flex; flex-direction: column; gap: 20px; }
   .day-wrapper {
-    position: relative;
     background: var(--bg-surface);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border-radius: var(--radius-xl);
     padding: 24px 32px;
     border: 1px solid var(--border);
-    border-top: 1px solid var(--border-light);
-    transition: box-shadow 0.4s, border-color 0.4s;
-  }
-  .day-wrapper:focus-within {
-    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.3);
   }
 
-  .day-label {
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px; font-weight: 500; color: var(--accent);
-    margin-bottom: 12px; display: flex; align-items: center;
-  }
-
-  .day-wrapper textarea {
-    width: 100%; min-height: 100px; background: transparent; border: none;
-    color: var(--text-main); font-family: 'DM Sans', sans-serif;
-    font-size: 16px; font-weight: 300; line-height: 1.6;
-    resize: vertical; outline: none;
-  }
-  .day-wrapper textarea::placeholder { color: #475569; }
-
-  .submit-row { display: flex; align-items: center; gap: 24px; }
+  .day-label { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 500; color: var(--accent); margin-bottom: 12px; }
+  .day-input { width: 100%; min-height: 80px; background: transparent; border: none; color: var(--text-main); font-family: inherit; font-size: 16px; outline: none; resize: vertical; }
 
   button.send {
-    display: flex; align-items: center; gap: 12px;
     background: linear-gradient(135deg, var(--accent), var(--accent-sec));
     color: #fff; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 500;
     padding: 16px 36px; cursor: pointer; border: none; border-radius: 30px;
-    transition: all 0.3s; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); transition: 0.3s;
   }
-  button.send:hover:not(:disabled) {
-    transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); filter: brightness(1.1);
-  }
-  button.send:disabled { background: #334155; box-shadow: none; cursor: not-allowed; color: #94a3b8; }
-  .send-icon { font-size: 16px; transition: transform 0.3s; }
-  button.send:hover .send-icon { transform: translateX(4px) scale(1.1); }
+  button.send:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+  button.send:disabled { background: #334155; cursor: not-allowed; }
 
-  /* ── Dashboard / Widgets ─────────────────────────────────── */
-  aside.dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-bottom: 48px;
-  }
-
-  .widget-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .widget {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
-    border-top: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s, border-color 0.3s;
-  }
-  .widget:hover {
-    transform: translateY(-4px);
-    border-color: rgba(192, 132, 252, 0.3);
-  }
-
+  aside.dashboard { display: flex; flex-direction: column; gap: 20px; padding-bottom: 48px; }
+  .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
   .widget.full { grid-column: 1 / -1; }
+  .widget-header { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
 
-  .widget-header {
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600;
-    letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted);
-    margin-bottom: 20px;
-  }
+  .mood-chart { display: flex; align-items: flex-end; gap: 10px; height: 100px; padding-bottom: 5px; }
+  .mood-bar { flex: 1; background: rgba(255,255,255,0.05); border-radius: 8px; position: relative; height: 100%; }
+  .mood-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, var(--accent-sec), var(--accent)); border-radius: 8px; transition: height 0.6s ease; }
+  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); }
+  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, #059669, var(--safe)); }
 
-  .mood-chart {
-    display: flex; align-items: flex-end; gap: 10px; height: 80px; width: 100%;
-  }
-  .mood-bar {
-    flex: 1; background: rgba(255,255,255,0.02);
-    border-radius: 8px; position: relative; overflow: hidden;
-  }
-  .mood-bar-fill {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(192, 132, 252, 0.6), var(--accent));
-    border-radius: 8px; transition: height 0.8s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 -4px 12px var(--accent-glow);
-  }
-  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); box-shadow: 0 -4px 12px rgba(251, 113, 133, 0.3); }
-  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, #059669, var(--safe)); box-shadow: 0 -4px 12px rgba(52, 211, 153, 0.3); }
+  .memory-stat .num { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 600; color: var(--accent); }
+  .pattern-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; }
 
-  .memory-stat { display: flex; flex-direction: column; justify-content: center; height: 100%; }
-  .memory-stat .num {
-    font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 600; line-height: 1;
-    background: linear-gradient(135deg, var(--text-main), var(--accent-sec));
-    -webkit-background-clip: text; color: transparent;
-    margin-bottom: 8px;
-  }
-  .memory-stat .label { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
-
-  .pattern-list { display: flex; flex-direction: column; gap: 12px; }
-  .pattern-tag {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 14px; color: var(--text-main); font-weight: 500;
-    background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 12px;
-  }
-  .pattern-tag .icon { font-size: 16px; }
-
-  .profile-bio {
-    font-size: 14px; line-height: 1.6; color: var(--text-muted); font-weight: 300;
-  }
-  .ai-indicator {
-    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent); box-shadow: 0 0 8px var(--accent);
-    margin-right: 8px; animation: pulse 2s infinite;
-  }
-
-  /* ── AI Response & History ─────────────────────────────── */
-  .ai-response {
-    display: none;
-    background: linear-gradient(145deg, rgba(30, 38, 50, 0.4), rgba(20, 25, 35, 0.4));
-    border: 1px solid var(--border); border-left: 4px solid var(--accent);
-    border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
-    padding: 32px; animation: fadeUp 0.6s ease; backdrop-filter: blur(10px);
-  }
+  .ai-response { display: none; background: rgba(30, 38, 50, 0.4); border-left: 4px solid var(--accent); border-radius: var(--radius-md); padding: 32px; margin-top: 20px; }
   .ai-response.visible { display: block; }
-  .ai-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 24px;
-    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
-    letter-spacing: 0.05em; color: var(--accent);
-  }
-  .ai-text { font-size: 16px; line-height: 1.8; font-weight: 300; white-space: pre-line; }
-  .ai-text p { margin-bottom: 16px; } .ai-text p:last-child { margin-bottom: 0; }
-  
-  .history-section h2 {
-    font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 500; margin-bottom: 24px;
-  }
-  .history-list { display: flex; flex-direction: column; gap: 16px; }
-  .history-item {
-    display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center;
-    padding: 24px; background: var(--bg-surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); cursor: pointer; transition: all 0.3s ease;
-  }
-  .history-item:hover {
-    background: rgba(40, 48, 65, 0.4); transform: translateX(4px); border-color: rgba(99, 102, 241, 0.3);
-  }
-  .history-emoji { 
-    font-size: 28px; background: rgba(255,255,255,0.03); width: 56px; height: 56px;
-    display: flex; align-items: center; justify-content: center; border-radius: 50%;
-  }
-  .history-text {
-    font-size: 16px; color: var(--text-main); font-weight: 300; overflow: hidden;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.6;
-  }
-  .history-meta { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+  .ai-text { font-size: 16px; line-height: 1.8; white-space: pre-line; }
 
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-  @media (max-width: 1024px) {
-    .layout { grid-template-columns: 1fr; padding: 0 24px; }
-    aside.dashboard { grid-row: 2; margin-top: 40px; }
-    .widget-grid { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 600px) {
-    .widget-grid { grid-template-columns: 1fr; }
-    .widget.full { grid-column: auto; }
-  }
+  .history-item { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; padding: 24px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); cursor: pointer; margin-top: 12px; transition: 0.3s; }
+  .history-item:hover { background: rgba(40, 48, 65, 0.6); transform: translateX(5px); }
+  .history-emoji { font-size: 28px; background: rgba(255,255,255,0.03); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .history-text { font-size: 15px; color: var(--text-main); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+  .history-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 </style>
 </head>
 <body>
 
 <div class="layout">
-
   <header>
     <div class="logo">Psycho<span>Diary</span></div>
     <div class="header-status">
@@ -327,38 +155,24 @@
   <main>
     <div class="date-header">
       <div class="date" id="currentDate"></div>
-      <div class="weekday" id="currentWeekday">Weekly Reflection</div>
+      <div class="weekday">Weekly Reflection</div>
     </div>
-
-    <!-- Контейнер для нескольких дней генерируется через JS -->
     <div id="multiDayContainer" class="multi-day-container"></div>
-
     <div class="submit-row">
-      <button class="send" id="sendBtn">
-        Analyze My Week
-        <span class="send-icon">✧</span>
-      </button>
+      <button class="send" id="sendBtn">Analyze My Week ✧</button>
     </div>
-
     <div class="ai-response" id="aiResponse">
-      <div class="ai-header">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12 2.1 7.1"></path><path d="M12 12l9.9 4.9"></path></svg>
-        AI Insights
-      </div>
       <div class="ai-text" id="aiText"></div>
     </div>
-
     <div class="history-section">
-      <h2>Timeline</h2>
-      <div class="history-list" id="historyList">
-        <div style="color:var(--text-muted); font-size:15px; font-weight:300;">Your timeline is currently empty.</div>
-      </div>
+      <h2 style="margin-top:40px; font-family:'Outfit'">Timeline</h2>
+      <div id="historyList"></div>
     </div>
   </main>
 
   <aside class="dashboard">
     <div class="widget full">
-      <div class="widget-header">Weekly Mood</div>
+      <div class="widget-header">Weekly Mood Trend</div>
       <div class="mood-chart" id="moodChart">
         <div class="mood-bar"><div class="mood-bar-fill" style="height:0%"></div></div>
         <div class="mood-bar"><div class="mood-bar-fill" style="height:0%"></div></div>
@@ -369,200 +183,173 @@
         <div class="mood-bar"><div class="mood-bar-fill" style="height:0%"></div></div>
       </div>
     </div>
-
     <div class="widget-grid">
       <div class="widget">
         <div class="widget-header">Memory Bank</div>
         <div class="memory-stat">
           <div class="num" id="memoryCount">0</div>
-          <div class="label">thoughts safely<br>stored securely</div>
+          <div style="font-size:12px; color:var(--text-muted)">entries saved</div>
         </div>
       </div>
-
       <div class="widget">
         <div class="widget-header">Patterns</div>
-        <div class="pattern-list" id="patternList">
-          <div class="pattern-tag"><span class="icon">✨</span> Gathering...</div>
-        </div>
+        <div id="patternList"></div>
       </div>
     </div>
-
     <div class="widget full">
-      <div class="widget-header">
-        <span class="ai-indicator"></span> AI Profile Analysis
-      </div>
-      <div class="profile-bio" id="profileBio">
-        Awaiting your first entries to build a psychological profile. Write your thoughts to let the AI understand you better...
-      </div>
+      <div class="widget-header">AI Profile Analysis</div>
+      <div class="profile-bio" id="profileBio">Awaiting more data to analyze your personality profile...</div>
     </div>
   </aside>
-
 </div>
 
 <script>
 const API = ''; 
+let history = [];
 
-let history =[];
-try { history = JSON.parse(localStorage.getItem('diary_history') || '[]'); } catch (err) {}
-
-document.getElementById('sendBtn').addEventListener('click', submitEntry);
+try {
+  history = JSON.parse(localStorage.getItem('diary_history') || '[]');
+} catch (e) {}
 
 function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return str ? str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
 }
 
-(function initDateAndInputs() {
+// Инициализация дней
+(function init() {
   const now = new Date();
-  const months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   document.getElementById('currentDate').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
   
-  // Генерация блоков для дней недели
   const container = document.getElementById('multiDayContainer');
   const jsDay = now.getDay();
-  const adjustedDay = jsDay === 0 ? 6 : jsDay - 1; // Пн = 0, Вс = 6
+  const adjustedDay = jsDay === 0 ? 6 : jsDay - 1;
   const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  let html = '';
   for(let i = 0; i <= adjustedDay; i++) {
-    const day = weekDays[i];
-    const isToday = (i === adjustedDay);
-    const labelToday = isToday ? '<span style="opacity:0.5; font-size:12px; margin-left:8px;">(Today)</span>' : '';
-    
-    html += `
-      <div class="day-wrapper">
-        <div class="day-label">${day} ${labelToday}</div>
-        <textarea class="day-input" data-day="${day}" placeholder="How did you feel on ${day}? What happened?"></textarea>
-      </div>
+    const div = document.createElement('div');
+    div.className = 'day-wrapper';
+    div.innerHTML = `
+      <div class="day-label">${weekDays[i]} ${i===adjustedDay ? '<span style="opacity:0.4">(Today)</span>':''}</div>
+      <textarea class="day-input" data-day="${weekDays[i]}" placeholder="What happened on ${weekDays[i]}?"></textarea>
     `;
+    container.appendChild(div);
   }
-  container.innerHTML = html;
+  updateUI();
 })();
-
-async function checkHealth() {
-  try {
-    const r = await fetch(`${API}/api/health`);
-    const d = await r.json();
-    if (d.status === 'ok') {
-      document.getElementById('statusDot').classList.add('online');
-      document.getElementById('statusText').textContent = 'Secure connection';
-    }
-  } catch {
-    document.getElementById('statusText').textContent = 'Offline';
-  }
-}
 
 async function submitEntry() {
   const inputs = document.querySelectorAll('.day-input');
-  let combinedText = '';
-  let hasContent = false;
+  let text = '';
+  inputs.forEach(i => { if(i.value.trim()) text += `--- ${i.dataset.day} ---\n${i.value}\n\n`; });
+  if(!text) return;
 
-  inputs.forEach(input => {
-    const val = input.value.trim();
-    if (val) {
-      hasContent = true;
-      combinedText += `--- ${input.dataset.day} ---\n${val}\n\n`;
-    }
-  });
-
-  if (!hasContent) return;
-
-  document.getElementById('sendBtn').disabled = true;
-  document.getElementById('sendBtn').innerHTML = 'Synthesizing...';
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true; btn.textContent = 'Processing...';
 
   try {
-    const resp = await fetch(`${API}/api/entry`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: combinedText })
+    const r = await fetch(`${API}/api/entry`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({text})
     });
-    if (!resp.ok) throw new Error();
-    const data = await resp.json();
+    const data = await r.json();
 
-    const el = document.getElementById('aiText');
-    el.innerHTML = data.response.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
-    document.getElementById('aiResponse').classList.add('visible');
-
-    const entry = { text: combinedText, response: data.response, mood: data.mood, timestamp: new Date().toISOString() };
+    const entry = { text, response: data.response, mood: data.mood, timestamp: new Date().toISOString() };
     history.unshift(entry);
-    if (history.length > 30) history.pop();
-    try { localStorage.setItem('diary_history', JSON.stringify(history)); } catch (e) {}
+    localStorage.setItem('diary_history', JSON.stringify(history));
 
-    renderHistory(); updateMoodChart();
-    inputs.forEach(input => input.value = ''); // Очистка
-  } catch (err) {
-    document.getElementById('aiText').textContent = '⚠️ Connection error.';
+    document.getElementById('aiText').innerHTML = data.response.split('\n\n').map(p => `<p>${p}</p>`).join('');
     document.getElementById('aiResponse').classList.add('visible');
+    
+    inputs.forEach(i => i.value = '');
+    updateUI();
+  } catch(e) {
+    alert("Connection error");
   } finally {
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('sendBtn').innerHTML = 'Analyze My Week <span class="send-icon">✧</span>';
+    btn.disabled = false; btn.textContent = 'Analyze My Week ✧';
   }
 }
 
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  if (!history.length) return;
-  list.innerHTML = history.map((item, i) => {
-    const d = new Date(item.timestamp);
-    const dateStr = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    return `
-      <div class="history-item" onclick="window.expandHistory(${i})">
-        <div class="history-emoji">${item.mood?.emoji || '📓'}</div>
-        <div class="history-content">
-          <div class="history-text">${escapeHtml(item.text).replace(/---/g, '')}</div>
-          <div class="history-meta">${dateStr} · ${item.mood?.mood || ''}</div>
-        </div>
-      </div>`;
-  }).join('');
-}
+document.getElementById('sendBtn').onclick = submitEntry;
 
-window.expandHistory = function(i) {
-  const item = history[i];
-  if (!item) return;
-  
-  const el = document.getElementById('aiText');
-  
-  // Так как полей ввода много, мы показываем историю прямо в блоке ответа ИИ
-  const userTextHTML = `
-    <div style="color: var(--text-muted); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
-      <div style="font-family:'Outfit'; color:var(--accent); margin-bottom: 12px; font-weight: 500;">Your Past Reflection:</div>
-      <div style="white-space: pre-line; font-size: 15px; line-height: 1.6;">${escapeHtml(item.text)}</div>
-    </div>
-  `;
-  const aiHTML = item.response.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
-  
-  el.innerHTML = userTextHTML + aiHTML;
-  document.getElementById('aiResponse').classList.add('visible');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function updateUI() {
+  renderHistory();
+  updateMoodChart();
+  updatePatterns();
+  loadProfile();
 }
 
 function updateMoodChart() {
-  const bars = document.querySelectorAll('#moodChart .mood-bar-fill');
-  const last7 = history.slice(0, 7).reverse();
-  bars.forEach((bar, i) => {
-    const score = last7[i]?.mood?.score || 0;
-    bar.style.height = `${(score / 10) * 100}%`;
-    if (score > 0 && score <= 4) bar.parentElement.dataset.score = 'low';
-    else if (score >= 7) bar.parentElement.dataset.score = 'high';
+  const bars = document.querySelectorAll('.mood-bar-fill');
+  bars.forEach(b => b.style.height = '0%');
+  
+  const last7 = [...history].slice(0, 7).reverse();
+  const startAt = 7 - last7.length;
+
+  last7.forEach((item, i) => {
+    const score = item.mood?.score || 0;
+    const bar = bars[startAt + i];
+    if(bar) {
+      bar.style.height = `${score * 10}%`;
+      const parent = bar.parentElement;
+      if(score <= 4) parent.dataset.score = 'low';
+      else if(score >= 7) parent.dataset.score = 'high';
+      else parent.removeAttribute('data-score');
+    }
   });
 }
 
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  document.getElementById('memoryCount').textContent = history.length;
+  if(!history.length) return;
+
+  container.innerHTML = history.map((item, i) => {
+    const d = new Date(item.timestamp);
+    const clean = item.text.replace(/---.*?---/g, '').replace(/\n/g, ' ').trim().slice(0, 60);
+    return `
+      <div class="history-item" onclick="window.expandHistory(${i})">
+        <div class="history-emoji">${item.mood?.emoji || '📓'}</div>
+        <div>
+          <div class="history-text">${escapeHtml(clean)}...</div>
+          <div class="history-meta">${d.toLocaleDateString()} · ${item.mood?.mood || 'Reflection'}</div>
+        </div>
+        <div style="font-weight:600; color:var(--accent)">${item.mood?.score || 0}/10</div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.expandHistory = (i) => {
+  const item = history[i];
+  document.getElementById('aiText').innerHTML = `<div style="margin-bottom:20px; color:var(--text-muted); font-style:italic">Your entry: ${escapeHtml(item.text.slice(0,200))}...</div>` + 
+    item.response.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  document.getElementById('aiResponse').classList.add('visible');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
 function updatePatterns() {
-  const el = document.getElementById('patternList');
-  if (history.length < 2) return;
-  const allMoods = history.flatMap(h => h.mood?.tags ||[]);
-  const freq = {}; allMoods.forEach(t => freq[t] = (freq[t] || 0) + 1);
-  const top = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 2);
-  if(top.length) el.innerHTML = top.map(([tag]) => `<div class="pattern-tag"><span class="icon">💡</span> ${tag}</div>`).join('');
+  const list = document.getElementById('patternList');
+  const allTags = history.flatMap(h => h.mood?.tags || []);
+  const counts = {}; allTags.forEach(t => counts[t] = (counts[t] || 0) + 1);
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 2);
+  
+  list.innerHTML = top.length ? top.map(([tag]) => `<div class="pattern-tag"><span>💡</span> ${tag}</div>`).join('') : '<div style="font-size:12px; opacity:0.5">Need more entries...</div>';
 }
 
 async function loadProfile() {
   try {
     const r = await fetch(`${API}/api/profile`); const d = await r.json();
-    if (d.user_bio || d.bio) document.getElementById('profileBio').textContent = d.user_bio || d.bio;
-    if (d.memories_count || d.total_memories) document.getElementById('memoryCount').textContent = d.memories_count || d.total_memories;
-  } catch {}
+    if(d.bio) document.getElementById('profileBio').textContent = d.bio;
+  } catch(e) {}
 }
 
-checkHealth(); renderHistory(); updateMoodChart(); updatePatterns(); loadProfile();
-setInterval(checkHealth, 30000);
+async function checkHealth() {
+  try {
+    const r = await fetch(`${API}/api/health`); const d = await r.json();
+    if(d.status==='ok') { document.getElementById('statusDot').classList.add('online'); document.getElementById('statusText').textContent='Secure connection'; }
+  } catch(e) {}
+}
+checkHealth();
 </script>
 </body>
 </html>
