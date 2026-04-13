@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Психодневник — ваш личный AI-психолог</title>
+<title>PsychoDiary — Your Personal AI Psychologist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Переменные ──────────────────────────────── */
+  /* ── Variables ──────────────────────────────── */
   :root {
     --bg:        #0d0f14;
     --bg2:       #13161e;
@@ -35,7 +35,7 @@
     overflow-x: hidden;
   }
 
-  /* ── Фоновый узор ────────────────────────────── */
+  /* ── Background Pattern ──────────────────────── */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0;
@@ -152,7 +152,7 @@
   .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, var(--danger), #8a4545); }
   .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, var(--safe), #45896e); }
 
-  /* Паттерны */
+  /* Patterns */
   .pattern-list {
     display: flex;
     flex-direction: column;
@@ -170,7 +170,7 @@
   .pattern-tag .icon { font-size: 16px; }
   .pattern-tag.active { opacity: 1; color: var(--gold); }
 
-  /* Профиль */
+  /* Profile */
   .profile-bio {
     font-size: 13px;
     line-height: 1.7;
@@ -535,11 +535,11 @@
 
   <!-- ── Header ─────────────────────────────────── -->
   <header>
-    <div class="logo">Психо<span>дневник</span></div>
+    <div class="logo">Psycho<span>diary</span></div>
     <div class="tagline">verifiable AI · TEE secured</div>
     <div class="header-status">
       <div class="dot" id="statusDot"></div>
-      <span id="statusText">подключение...</span>
+      <span id="statusText">connecting...</span>
     </div>
   </header>
 
@@ -547,9 +547,9 @@
   <aside>
 
     <div class="sidebar-section">
-      <h3>Настроение за неделю</h3>
+      <h3>Weekly Mood</h3>
       <div class="mood-chart" id="moodChart">
-        <!-- заполняется JS -->
+        <!-- populated by JS -->
         <div class="mood-bar" style="height:100%"><div class="mood-bar-fill" style="height:0%"></div></div>
         <div class="mood-bar" style="height:100%"><div class="mood-bar-fill" style="height:0%"></div></div>
         <div class="mood-bar" style="height:100%"><div class="mood-bar-fill" style="height:0%"></div></div>
@@ -561,23 +561,23 @@
     </div>
 
     <div class="sidebar-section">
-      <h3>Паттерны</h3>
+      <h3>Patterns</h3>
       <div class="pattern-list" id="patternList">
-        <div class="pattern-tag"><span class="icon">🌙</span> Загрузка...</div>
+        <div class="pattern-tag"><span class="icon">🌙</span> Gathering data...</div>
       </div>
     </div>
 
     <div class="sidebar-section">
-      <h3>Память AI</h3>
+      <h3>AI Memory</h3>
       <div class="memory-stat">
         <div class="num" id="memoryCount">—</div>
-        <div class="label">воспоминаний сохранено</div>
+        <div class="label">memories saved</div>
       </div>
     </div>
 
     <div class="sidebar-section">
-      <h3>Ваш профиль</h3>
-      <div class="profile-bio" id="profileBio">Заполняется по мере ваших записей...</div>
+      <h3>Your Profile</h3>
+      <div class="profile-bio" id="profileBio">Will populate as you write entries...</div>
     </div>
 
   </aside>
@@ -585,7 +585,7 @@
   <!-- ── Main ───────────────────────────────────── -->
   <main>
 
-    <!-- Дата -->
+    <!-- Date -->
     <div class="date-header">
       <div>
         <div class="date" id="currentDate"></div>
@@ -593,31 +593,31 @@
       </div>
     </div>
 
-    <!-- Поле записи -->
+    <!-- Entry Field -->
     <div class="entry-wrapper">
-      <div class="entry-label">Запись дня</div>
+      <div class="entry-label">Today's Entry</div>
       <textarea
         id="entryText"
-        placeholder="Что происходило сегодня? Что вы чувствуете? Не нужно выбирать слова — пишите, как думаете..."
+        placeholder="What happened today? How are you feeling? Don't worry about phrasing — just write what's on your mind..."
         maxlength="3000"
       ></textarea>
       <div class="char-count" id="charCount">0 / 3000</div>
     </div>
 
-    <!-- Кнопка и статус -->
+    <!-- Submit button & status -->
     <div class="submit-row">
       <button class="send" id="sendBtn" onclick="submitEntry()">
         <span class="send-icon">✦</span>
-        Поделиться с AI
+        Share with AI
       </button>
       <div class="loading" id="loading">
         <div class="loading-dots"><span></span><span></span><span></span></div>
-        AI анализирует запись...
+        AI is analyzing your entry...
       </div>
-      <div class="hint" id="hint">Ваши данные зашифрованы через TEE</div>
+      <div class="hint" id="hint">Your data is encrypted via TEE</div>
     </div>
 
-    <!-- Значок настроения -->
+    <!-- Mood Badge -->
     <div class="mood-badge" id="moodBadge">
       <span class="mood-emoji" id="moodEmoji">😐</span>
       <div>
@@ -627,259 +627,9 @@
       <div class="mood-score" id="moodScore">—/10</div>
     </div>
 
-    <!-- Ответ AI -->
+    <!-- AI Response -->
     <div class="ai-response" id="aiResponse">
-      <div class="ai-header">Ответ вашего AI-психолога</div>
+      <div class="ai-header">Response from your AI Psychologist</div>
       <div class="ai-text" id="aiText"></div>
       <div class="ai-footer">
-        <span class="verified-badge">✓</span>
-        Верифицировано через OpenGradient TEE ·
-        <span id="paymentHash" style="opacity:0.5; font-size:9px; overflow:hidden; text-overflow:ellipsis; max-width:200px;"></span>
-      </div>
-    </div>
-
-    <!-- История записей -->
-    <div class="history-section">
-      <h2>Предыдущие записи</h2>
-      <div class="history-list" id="historyList">
-        <div style="color:var(--muted); font-size:14px; font-style:italic; padding: 20px 0;">
-          Здесь появятся ваши прошлые записи...
-        </div>
-      </div>
-    </div>
-
-  </main>
-</div>
-
-<script>
-const API = 'https://testik-production-8ed6.up.railway.app';
-
-// ── История из localStorage ──────────────────────
-let history = JSON.parse(localStorage.getItem('diary_history') || '[]');
-
-// ── Дата ──────────────────────────────────────────
-(function setDate() {
-  const now = new Date();
-  const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
-  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  document.getElementById('currentDate').textContent =
-    `${now.getDate()} ${months[now.getMonth()]}`;
-  document.getElementById('currentWeekday').textContent = days[now.getDay()];
-})();
-
-// ── Char counter ─────────────────────────────────
-document.getElementById('entryText').addEventListener('input', function() {
-  document.getElementById('charCount').textContent = `${this.value.length} / 3000`;
-});
-
-// ── Health check ─────────────────────────────────
-async function checkHealth() {
-  try {
-    const r = await fetch(`${API}/api/health`);
-    const d = await r.json();
-    const dot  = document.getElementById('statusDot');
-    const text = document.getElementById('statusText');
-    if (d.status === 'ok') {
-      dot.classList.add('online');
-      text.textContent = d.llm ? 'AI подключён' : 'нет OG ключа';
-    }
-  } catch {
-    document.getElementById('statusText').textContent = 'сервер недоступен';
-  }
-}
-
-// ── Submit entry ──────────────────────────────────
-async function submitEntry() {
-  const text = document.getElementById('entryText').value.trim();
-  if (!text) return;
-
-  // UI — loading
-  document.getElementById('sendBtn').disabled = true;
-  document.getElementById('loading').classList.add('visible');
-  document.getElementById('hint').style.display = 'none';
-  document.getElementById('aiResponse').classList.remove('visible');
-  document.getElementById('moodBadge').classList.remove('visible');
-
-  try {
-    const resp = await fetch(`${API}/api/entry`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
-
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-
-    // Показать настроение
-    showMood(data.mood);
-
-    // Показать ответ AI
-    showAIResponse(data.response, data.payment_hash);
-
-    // Сохранить в историю
-    const entry = {
-      text,
-      response: data.response,
-      mood: data.mood,
-      timestamp: data.timestamp || new Date().toISOString()
-    };
-    history.unshift(entry);
-    if (history.length > 30) history.pop();
-    localStorage.setItem('diary_history', JSON.stringify(history));
-    renderHistory();
-    updateMoodChart();
-
-    // Очистить поле
-    document.getElementById('entryText').value = '';
-    document.getElementById('charCount').textContent = '0 / 3000';
-
-  } catch (err) {
-    document.getElementById('aiText').textContent =
-      '⚠️ Ошибка подключения к серверу. Убедитесь что backend запущен.';
-    document.getElementById('aiResponse').classList.add('visible');
-    console.error(err);
-  } finally {
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('loading').classList.remove('visible');
-    document.getElementById('hint').style.display = '';
-  }
-}
-
-function showMood(mood) {
-  if (!mood) return;
-  document.getElementById('moodEmoji').textContent  = mood.emoji  || '😐';
-  document.getElementById('moodWord').textContent   = mood.mood   || '—';
-  document.getElementById('moodScore').textContent  = `${mood.score || '—'}/10`;
-
-  const tagsEl = document.getElementById('moodTags');
-  tagsEl.innerHTML = '';
-  (mood.tags || []).forEach(tag => {
-    const span = document.createElement('span');
-    span.className = 'mood-tag';
-    span.textContent = tag;
-    tagsEl.appendChild(span);
-  });
-
-  document.getElementById('moodBadge').classList.add('visible');
-}
-
-function showAIResponse(text, hash) {
-  // Разбиваем на абзацы
-  const el = document.getElementById('aiText');
-  el.innerHTML = text.split('\n\n').filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`).join('');
-
-  if (hash) {
-    document.getElementById('paymentHash').textContent = `tx: ${hash}`;
-  }
-  document.getElementById('aiResponse').classList.add('visible');
-  document.getElementById('aiResponse').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// ── Рендер истории ────────────────────────────────
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  if (!history.length) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:14px;font-style:italic;padding:20px 0">Здесь появятся ваши прошлые записи...</div>';
-    return;
-  }
-  list.innerHTML = history.map((item, i) => {
-    const d = new Date(item.timestamp);
-    const dateStr = `${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    const emoji = item.mood?.emoji || '📓';
-    const score = item.mood?.score;
-    return `
-      <div class="history-item" onclick="expandHistory(${i})">
-        <div class="history-emoji">${emoji}</div>
-        <div class="history-content">
-          <div class="history-text">${escapeHtml(item.text)}</div>
-          <div class="history-meta">${dateStr} · ${item.mood?.mood || ''}</div>
-        </div>
-        ${score ? `<div class="history-score">${score}/10</div>` : ''}
-      </div>
-    `;
-  }).join('');
-}
-
-function expandHistory(i) {
-  const item = history[i];
-  if (!item) return;
-  document.getElementById('entryText').value = item.text;
-  document.getElementById('charCount').textContent = `${item.text.length} / 3000`;
-  showMood(item.mood);
-  showAIResponse(item.response, '');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ── Mood chart ────────────────────────────────────
-function updateMoodChart() {
-  const bars = document.querySelectorAll('#moodChart .mood-bar-fill');
-  const last7 = history.slice(0, 7).reverse();
-  bars.forEach((bar, i) => {
-    const entry = last7[i];
-    const score = entry?.mood?.score || 0;
-    bar.style.height = `${(score / 10) * 100}%`;
-    const parent = bar.parentElement;
-    if (score <= 3)      parent.dataset.score = 'low';
-    else if (score >= 7) parent.dataset.score = 'high';
-    else                 delete parent.dataset.score;
-  });
-}
-
-// ── Паттерны ──────────────────────────────────────
-function updatePatterns() {
-  const el = document.getElementById('patternList');
-  if (history.length < 2) {
-    el.innerHTML = '<div class="pattern-tag"><span class="icon">📝</span> Накапливаем данные...</div>';
-    return;
-  }
-
-  const scores = history.slice(0, 7).map(h => h.mood?.score || 5);
-  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-  const allMoods = history.flatMap(h => h.mood?.tags || []);
-  const freq = {};
-  allMoods.forEach(t => freq[t] = (freq[t] || 0) + 1);
-  const top = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 3);
-
-  const patterns = [];
-  if (avg < 4) patterns.push({ icon: '⚠️', text: 'Низкое настроение на неделе', active: true });
-  if (avg > 7) patterns.push({ icon: '✨', text: 'Хорошая неделя', active: true });
-  top.forEach(([tag]) => patterns.push({ icon: '🔖', text: tag, active: false }));
-  if (!patterns.length) patterns.push({ icon: '🌿', text: 'Стабильное состояние', active: false });
-
-  el.innerHTML = patterns.map(p =>
-    `<div class="pattern-tag ${p.active ? 'active' : ''}"><span class="icon">${p.icon}</span> ${p.text}</div>`
-  ).join('');
-}
-
-// ── Профиль из MemSync ────────────────────────────
-async function loadProfile() {
-  try {
-    const r = await fetch(`${API}/api/profile`);
-    const d = await r.json();
-    const bio = d.user_bio || d.bio;
-    if (bio) document.getElementById('profileBio').textContent = bio;
-    const count = d.memories_count || d.total_memories;
-    if (count) document.getElementById('memoryCount').textContent = count;
-  } catch { /* offline */ }
-}
-
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// Enter для отправки (Ctrl+Enter)
-document.getElementById('entryText').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.ctrlKey) submitEntry();
-});
-
-// ── Инициализация ─────────────────────────────────
-checkHealth();
-renderHistory();
-updateMoodChart();
-updatePatterns();
-loadProfile();
-setInterval(checkHealth, 30000);
-</script>
-</body>
-</html>
+        <span 
