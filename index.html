@@ -5,22 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PsychoDiary — Your Personal AI Psychologist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<!-- Используем современные шрифты: Inter для интерфейса, Lora для текста дневника -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Variables ──────────────────────────────── */
+  /* ── Variables (Therapeutic Light Theme) ──────────────────────────────── */
   :root {
-    --bg:        #0d0f14;
-    --bg2:       #13161e;
-    --bg3:       #191d28;
-    --border:    rgba(255,255,255,0.06);
-    --gold:      #c9a96e;
-    --gold-dim:  #8a6f45;
-    --cream:     #e8e0d0;
-    --muted:     #6b7080;
-    --danger:    #c96e6e;
-    --safe:      #6ec996;
-    --glow:      rgba(201,169,110,0.12);
+    --bg-main:       #F4F7F6;
+    --bg-panel:      #FFFFFF;
+    --bg-hover:      #F9FAFA;
+    --border:        #E2E8F0;
+    --accent:        #5E8B7E; /* Calming sage green */
+    --accent-hover:  #4A7367;
+    --text-main:     #2D3748;
+    --text-muted:    #718096;
+    --danger:        #E53E3E;
+    --safe:          #38A169;
+    --shadow-sm:     0 2px 8px rgba(45, 55, 72, 0.04);
+    --shadow-md:     0 8px 24px rgba(45, 55, 72, 0.06);
+    --radius-lg:     20px;
+    --radius-md:     12px;
   }
 
   /* ── Reset ───────────────────────────────────── */
@@ -28,21 +32,21 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg);
-    color: var(--cream);
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Background Pattern ──────────────────────── */
+  /* ── Background Pattern (Soft waves/gradient) ──────────────────────── */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,169,110,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(110,150,201,0.03) 0%, transparent 60%),
-      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Ccircle cx='30' cy='30' r='0.5' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+    background: 
+      radial-gradient(circle at 15% 50%, rgba(94, 139, 126, 0.04), transparent 50%),
+      radial-gradient(circle at 85% 30%, rgba(56, 161, 105, 0.03), transparent 50%);
     pointer-events: none;
   }
 
@@ -50,7 +54,7 @@
   .layout {
     position: relative; z-index: 1;
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 320px 1fr;
     grid-template-rows: auto 1fr;
     min-height: 100vh;
     max-width: 1400px;
@@ -60,27 +64,30 @@
   /* ── Header ──────────────────────────────────── */
   header {
     grid-column: 1 / -1;
-    padding: 32px 48px 24px;
-    border-bottom: 1px solid var(--border);
+    padding: 24px 48px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 24px;
   }
 
   .logo {
-    font-size: 28px;
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    color: var(--gold);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--accent);
   }
-  .logo span { font-style: italic; }
+  .logo span { 
+    font-weight: 300; 
+    color: var(--text-main);
+  }
 
   .tagline {
     font-size: 13px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-weight: 300;
-    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 400;
+    background: var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
   }
 
   .header-status {
@@ -88,39 +95,46 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
   }
 
   .dot {
-    width: 6px; height: 6px;
+    width: 8px; height: 8px;
     border-radius: 50%;
-    background: var(--muted);
+    background: var(--text-muted);
     animation: pulse 2s ease-in-out infinite;
   }
-  .dot.online { background: var(--safe); }
+  .dot.online { background: var(--safe); box-shadow: 0 0 8px rgba(56, 161, 105, 0.4); }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    50% { opacity: 0.5; }
   }
 
   /* ── Sidebar ─────────────────────────────────── */
   aside {
     grid-row: 2;
-    border-right: 1px solid var(--border);
-    padding: 32px 24px;
+    padding: 0 24px 32px 48px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
+  }
+
+  .sidebar-section {
+    background: var(--bg-panel);
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255,255,255,0.5);
   }
 
   .sidebar-section h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--text-muted);
     margin-bottom: 16px;
   }
 
@@ -128,155 +142,149 @@
   .mood-chart {
     display: flex;
     align-items: flex-end;
-    gap: 6px;
-    height: 64px;
+    gap: 8px;
+    height: 70px;
   }
 
   .mood-bar {
     flex: 1;
-    background: var(--bg3);
-    border-radius: 2px;
+    background: var(--bg-main);
+    border-radius: 6px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s;
   }
-  .mood-bar:hover { transform: scaleX(1.2); }
+  .mood-bar:hover { transform: translateY(-4px); }
   .mood-bar-fill {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, var(--gold), var(--gold-dim));
-    border-radius: 2px;
+    background: linear-gradient(to top, var(--accent), #83b1a4);
+    border-radius: 6px;
     transition: height 0.6s cubic-bezier(.34,1.56,.64,1);
   }
-  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, var(--danger), #8a4545); }
-  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, var(--safe), #45896e); }
+  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, var(--danger), #fc8181); }
+  .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, var(--safe), #68d391); }
 
   /* Patterns */
   .pattern-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .pattern-tag {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--cream);
-    opacity: 0.7;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
   }
-  .pattern-tag .icon { font-size: 16px; }
-  .pattern-tag.active { opacity: 1; color: var(--gold); }
+  .pattern-tag.active { color: var(--text-main); }
+  .pattern-tag .icon { 
+    font-size: 16px; 
+    background: var(--bg-main);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+  }
 
   /* Profile */
   .profile-bio {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    font-family: 'Lora', serif;
     font-style: italic;
-    border-left: 2px solid var(--gold-dim);
-    padding-left: 12px;
   }
 
   /* Memory count */
   .memory-stat {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: baseline;
+    gap: 8px;
   }
   .memory-stat .num {
-    font-family: 'DM Mono', monospace;
-    font-size: 32px;
-    color: var(--gold);
-    font-weight: 300;
+    font-size: 36px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
   .memory-stat .label {
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
   }
 
   /* ── Main ────────────────────────────────────── */
   main {
     grid-row: 2;
-    padding: 40px 48px;
+    padding: 0 48px 48px 24px;
     display: flex;
     flex-direction: column;
     gap: 32px;
-    overflow-y: auto;
   }
 
   /* Date header */
   .date-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+    margin-bottom: -8px;
   }
   .date-header .date {
-    font-size: 42px;
-    font-weight: 300;
-    letter-spacing: -0.01em;
-    color: var(--cream);
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
   }
   .date-header .weekday {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.12em;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
   }
 
   /* ── Entry textarea ──────────────────────────── */
   .entry-wrapper {
     position: relative;
+    background: var(--bg-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.3s, border-color 0.3s;
   }
-
-  .entry-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
+  .entry-wrapper:focus-within {
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
   }
 
   textarea {
     width: 100%;
-    min-height: 180px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--cream);
-    font-family: 'Cormorant Garamond', serif;
+    min-height: 200px;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: 'Lora', serif; /* Серифный шрифт для эффекта "дневника" */
     font-size: 18px;
-    font-weight: 300;
     line-height: 1.8;
-    padding: 24px 28px;
     resize: vertical;
     outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    caret-color: var(--gold);
   }
 
   textarea::placeholder {
-    color: var(--muted);
+    color: #A0AEC0;
     font-style: italic;
-  }
-
-  textarea:focus {
-    border-color: var(--gold-dim);
-    box-shadow: 0 0 0 4px var(--glow), inset 0 0 40px rgba(201,169,110,0.02);
   }
 
   /* char counter */
   .char-count {
     position: absolute;
-    bottom: 12px; right: 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
+    bottom: 16px; right: 24px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
     pointer-events: none;
   }
 
@@ -284,53 +292,54 @@
   .submit-row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
   }
 
   button.send {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: transparent;
-    border: 1px solid var(--gold-dim);
-    color: var(--gold);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    padding: 12px 28px;
+    gap: 12px;
+    background: var(--accent);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 32px;
     cursor: pointer;
-    border-radius: 2px;
+    border: none;
+    border-radius: 30px;
     transition: all 0.3s;
-    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(94, 139, 126, 0.2);
   }
 
   button.send:hover:not(:disabled) {
-    background: var(--glow);
-    border-color: var(--gold);
-    box-shadow: 0 0 20px var(--glow);
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(94, 139, 126, 0.3);
   }
 
   button.send:disabled {
-    opacity: 0.4;
+    background: var(--text-muted);
+    box-shadow: none;
     cursor: not-allowed;
   }
 
   .send-icon {
-    width: 16px; height: 16px;
-    border: 1px solid currentColor;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px;
+    font-size: 16px;
     transition: transform 0.3s;
   }
-  button.send:hover .send-icon { transform: rotate(45deg); }
+  button.send:hover .send-icon { transform: translateX(4px); }
 
   .hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hint::before {
+    content: '🔒';
     font-size: 12px;
-    color: var(--muted);
-    font-style: italic;
   }
 
   /* ── Loading ─────────────────────────────────── */
@@ -338,9 +347,9 @@
     display: none;
     align-items: center;
     gap: 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
   }
   .loading.visible { display: flex; }
 
@@ -348,8 +357,8 @@
     display: flex; gap: 4px;
   }
   .loading-dots span {
-    width: 4px; height: 4px;
-    background: var(--gold-dim);
+    width: 6px; height: 6px;
+    background: var(--accent);
     border-radius: 50%;
     animation: bounce 1.2s ease-in-out infinite;
   }
@@ -364,45 +373,53 @@
   .mood-badge {
     display: none;
     align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    background: var(--bg2);
+    gap: 16px;
+    padding: 16px 24px;
+    background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     animation: fadeUp 0.5s ease;
   }
   .mood-badge.visible { display: flex; }
 
-  .mood-emoji { font-size: 22px; }
-  .mood-text  { color: var(--cream); }
+  .mood-emoji { 
+    font-size: 28px; 
+    background: var(--bg-main);
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .mood-text  { font-weight: 600; color: var(--text-main); font-size: 15px; }
   .mood-score {
     margin-left: auto;
-    color: var(--gold);
-    font-size: 16px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 18px;
+    background: rgba(94, 139, 126, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
   }
 
   .mood-tags {
-    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;
   }
   .mood-tag {
-    font-size: 10px;
-    padding: 2px 8px;
-    background: var(--bg3);
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--bg-main);
     border-radius: 20px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 500;
   }
 
   /* ── AI Response ─────────────────────────────── */
   .ai-response {
     display: none;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--gold-dim);
-    border-radius: 0 4px 4px 0;
-    padding: 28px 32px;
+    background: #F0F5F4; /* Очень легкий зеленый оттенок */
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 32px;
     animation: fadeUp 0.6s ease;
   }
   .ai-response.visible { display: block; }
@@ -410,26 +427,20 @@
   .ai-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 20px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.16em;
+    font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
-    color: var(--gold-dim);
-  }
-
-  .ai-header::before {
-    content: '';
-    width: 20px; height: 1px;
-    background: var(--gold-dim);
+    letter-spacing: 0.05em;
+    color: var(--accent);
   }
 
   .ai-text {
+    font-family: 'Lora', serif;
     font-size: 17px;
-    line-height: 1.9;
-    color: var(--cream);
-    font-weight: 300;
+    line-height: 1.8;
+    color: var(--text-main);
     white-space: pre-line;
   }
 
@@ -437,28 +448,29 @@
   .ai-text p:last-child { margin-bottom: 0; }
 
   .ai-footer {
-    margin-top: 20px;
+    margin-top: 24px;
     padding-top: 16px;
-    border-top: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
+    border-top: 1px solid rgba(94, 139, 126, 0.2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
     display: flex;
     align-items: center;
     gap: 8px;
   }
   .verified-badge {
     color: var(--safe);
-    font-size: 10px;
+    font-weight: bold;
   }
 
   /* ── History ─────────────────────────────────── */
+  .history-section {
+    margin-top: 16px;
+  }
   .history-section h2 {
-    font-size: 13px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
     margin-bottom: 20px;
   }
 
@@ -472,25 +484,32 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 16px;
-    align-items: start;
-    padding: 16px 20px;
-    background: var(--bg2);
+    align-items: center;
+    padding: 20px;
+    background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   }
   .history-item:hover {
-    border-color: var(--gold-dim);
-    background: var(--bg3);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--accent);
   }
 
-  .history-emoji { font-size: 20px; line-height: 1.4; }
-  .history-content {}
+  .history-emoji { 
+    font-size: 24px; 
+    background: var(--bg-main);
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  
   .history-text {
-    font-size: 14px;
-    color: var(--cream);
-    opacity: 0.7;
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: var(--text-main);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -498,15 +517,18 @@
     line-height: 1.6;
   }
   .history-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 6px;
   }
   .history-score {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--gold);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-main);
+    background: var(--bg-main);
+    padding: 6px 12px;
+    border-radius: 20px;
   }
 
   /* ── Animations ──────────────────────────────── */
@@ -516,9 +538,10 @@
   }
 
   /* ── Scrollbar ───────────────────────────────── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #A0AEC0; }
 
   /* ── Responsive ──────────────────────────────── */
   @media (max-width: 900px) {
@@ -526,6 +549,7 @@
     aside { display: none; }
     header { padding: 20px 24px; }
     main { padding: 24px; }
+    .entry-wrapper { padding: 16px; }
   }
 </style>
 </head>
@@ -535,11 +559,11 @@
 
   <!-- ── Header ─────────────────────────────────── -->
   <header>
-    <div class="logo">Psycho<span>diary</span></div>
-    <div class="tagline">verifiable AI · TEE secured</div>
+    <div class="logo">Psycho<span>Diary</span></div>
+    <div class="tagline">Verifiable AI · TEE Secured</div>
     <div class="header-status">
+      <span id="statusText">Connecting...</span>
       <div class="dot" id="statusDot"></div>
-      <span id="statusText">connecting...</span>
     </div>
   </header>
 
@@ -587,15 +611,12 @@
 
     <!-- Date -->
     <div class="date-header">
-      <div>
-        <div class="date" id="currentDate"></div>
-        <div class="weekday" id="currentWeekday"></div>
-      </div>
+      <div class="date" id="currentDate"></div>
+      <div class="weekday" id="currentWeekday"></div>
     </div>
 
     <!-- Entry Field -->
     <div class="entry-wrapper">
-      <div class="entry-label">Today's Entry</div>
       <textarea
         id="entryText"
         placeholder="What happened today? How are you feeling? Don't worry about phrasing — just write what's on your mind..."
@@ -604,17 +625,17 @@
       <div class="char-count" id="charCount">0 / 3000</div>
     </div>
 
-    <!-- Submit button & status (БЕЗ onclick) -->
+    <!-- Submit button & status -->
     <div class="submit-row">
       <button class="send" id="sendBtn">
-        <span class="send-icon">✦</span>
         Share with AI
+        <span class="send-icon">➔</span>
       </button>
       <div class="loading" id="loading">
         <div class="loading-dots"><span></span><span></span><span></span></div>
         AI is analyzing your entry...
       </div>
-      <div class="hint" id="hint">Your data is encrypted via TEE</div>
+      <div class="hint" id="hint">Your data is completely private & encrypted</div>
     </div>
 
     <!-- Mood Badge -->
@@ -629,12 +650,15 @@
 
     <!-- AI Response -->
     <div class="ai-response" id="aiResponse">
-      <div class="ai-header">Response from your AI Psychologist</div>
+      <div class="ai-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Response from your AI Psychologist
+      </div>
       <div class="ai-text" id="aiText"></div>
       <div class="ai-footer">
         <span class="verified-badge">✓</span>
         Verified via OpenGradient TEE ·
-        <span id="paymentHash" style="opacity:0.5; font-size:9px; overflow:hidden; text-overflow:ellipsis; max-width:200px;"></span>
+        <span id="paymentHash" style="opacity:0.7; overflow:hidden; text-overflow:ellipsis; max-width:250px; white-space:nowrap;"></span>
       </div>
     </div>
 
@@ -642,7 +666,7 @@
     <div class="history-section">
       <h2>Previous Entries</h2>
       <div class="history-list" id="historyList">
-        <div style="color:var(--muted); font-size:14px; font-style:italic; padding: 20px 0;">
+        <div style="color:var(--text-muted); font-size:14px; font-style:italic; padding: 20px 0;">
           Your past entries will appear here...
         </div>
       </div>
@@ -651,6 +675,9 @@
   </main>
 </div>
 
+<!-- ==========================================
+     Ниже идет оригинальный скрипт без изменений 
+     ========================================== -->
 <script>
 const API = ''; 
 
@@ -785,7 +812,7 @@ function showAIResponse(text, hash) {
 function renderHistory() {
   const list = document.getElementById('historyList');
   if (!history.length) {
-    list.innerHTML = '<div style="color:var(--muted);font-size:14px;font-style:italic;padding:20px 0">Your past entries will appear here...</div>';
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:14px;font-style:italic;padding:20px 0">Your past entries will appear here...</div>';
     return;
   }
   list.innerHTML = history.map((item, i) => {
