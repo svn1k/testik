@@ -14,45 +14,128 @@
     --bg-card:       linear-gradient(145deg, rgba(30, 38, 55, 0.5), rgba(15, 20, 30, 0.5));
     --border:        rgba(255, 255, 255, 0.06);
     --border-light:  rgba(255, 255, 255, 0.12);
-    --accent:        #818cf8; 
-    --accent-sec:    #c084fc; 
+    --accent:        #818cf8;
+    --accent-sec:    #c084fc;
     --accent-glow:   rgba(129, 140, 248, 0.4);
     --text-main:     #f8fafc;
     --text-muted:    #94a3b8;
-    --danger:        #fb7185; 
-    --safe:          #34d399; 
+    --danger:        #fb7185;
+    --safe:          #34d399;
     --radius-xl:     28px;
     --radius-lg:     20px;
     --radius-md:     14px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    background: 
-      radial-gradient(circle at 15% 30%, rgba(99, 102, 241, 0.08), transparent 40%),
-      radial-gradient(circle at 85% 60%, rgba(192, 132, 252, 0.08), transparent 40%);
+  /* ── Animated background canvas ── */
+  #bgCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
     pointer-events: none;
   }
 
+  /* ── Animated gradient orbs ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    animation: orbAppear 2s ease forwards;
+  }
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+    top: -10%; left: -5%;
+    animation: orbAppear 2s ease forwards, orbFloat1 18s ease-in-out 2s infinite;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,132,252,0.10), transparent 70%);
+    bottom: 10%; right: -5%;
+    animation: orbAppear 2.4s ease forwards, orbFloat2 22s ease-in-out 2s infinite;
+  }
+  .orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(129,140,248,0.08), transparent 70%);
+    top: 50%; left: 45%;
+    animation: orbAppear 3s ease forwards, orbFloat3 15s ease-in-out 2s infinite;
+  }
+
+  @keyframes orbAppear {
+    to { opacity: 1; }
+  }
+  @keyframes orbFloat1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(40px,-60px) scale(1.05); }
+    66%      { transform: translate(-30px,40px) scale(0.96); }
+  }
+  @keyframes orbFloat2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    40%      { transform: translate(-50px,30px) scale(1.08); }
+    70%      { transform: translate(30px,-40px) scale(0.95); }
+  }
+  @keyframes orbFloat3 {
+    0%,100% { transform: translate(0,0); }
+    50%      { transform: translate(-60px,-40px); }
+  }
+
+  /* ── Layout ── */
   .layout {
     position: relative; z-index: 1;
     display: grid;
-    grid-template-columns: 1fr 380px; 
+    grid-template-columns: 1fr 380px;
     grid-template-rows: auto 1fr;
     gap: 0 48px;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 48px;
+  }
+
+  /* ── Entrance animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes logoReveal {
+    0%   { opacity: 0; letter-spacing: 0.3em; }
+    100% { opacity: 1; letter-spacing: normal; }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes pulseGlow {
+    0%,100% { box-shadow: 0 0 16px var(--accent-glow); }
+    50%      { box-shadow: 0 0 28px rgba(192,132,252,0.5); }
+  }
+  @keyframes barGrow {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
   }
 
   header {
@@ -62,6 +145,8 @@
     align-items: center;
     border-bottom: 1px solid var(--border);
     margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeDown 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
   }
 
   .logo {
@@ -70,78 +155,183 @@
     font-weight: 500;
     color: var(--text-main);
     display: flex; align-items: center; gap: 10px;
+    animation: logoReveal 0.9s ease 0.2s both;
   }
   .logo::before {
     content: '';
     display: block; width: 12px; height: 12px;
     background: linear-gradient(135deg, var(--accent), var(--accent-sec));
     border-radius: 50%;
-    box-shadow: 0 0 16px var(--accent-glow);
+    animation: pulseGlow 3s ease-in-out 1s infinite;
   }
 
   .header-status {
     margin-left: auto;
     display: flex; align-items: center; gap: 10px;
     font-size: 13px; color: var(--text-muted);
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
   }
 
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
-  .dot.online { background: var(--safe); box-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
+  .dot.online { background: var(--safe); box-shadow: 0 0 10px rgba(52,211,153,0.4); }
 
   main { display: flex; flex-direction: column; gap: 32px; padding-bottom: 48px; }
 
-  .date-header { margin-bottom: -12px; }
-  .date-header .date { font-family: 'Outfit', sans-serif; font-size: 44px; font-weight: 500; color: var(--text-main); }
-  .date-header .weekday { font-size: 14px; color: var(--accent-sec); font-weight: 500; text-transform: uppercase; }
+  .date-header {
+    margin-bottom: -12px;
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;
+  }
+  .date-header .date {
+    font-family: 'Outfit', sans-serif;
+    font-size: 44px; font-weight: 500; color: var(--text-main);
+  }
+  .date-header .weekday {
+    font-size: 14px; color: var(--accent-sec); font-weight: 500; text-transform: uppercase;
+  }
 
   .multi-day-container { display: flex; flex-direction: column; gap: 20px; }
+
   .day-wrapper {
     background: var(--bg-surface);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-xl);
     padding: 24px 32px;
     border: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .day-wrapper.animate-in {
+    animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  .day-wrapper:focus-within {
+    border-color: rgba(129,140,248,0.3);
+    box-shadow: 0 0 0 1px rgba(129,140,248,0.1);
   }
 
   .day-label { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 500; color: var(--accent); margin-bottom: 12px; }
   .day-input { width: 100%; min-height: 80px; background: transparent; border: none; color: var(--text-main); font-family: inherit; font-size: 16px; outline: none; resize: vertical; }
 
+  .submit-row {
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1.2s forwards;
+  }
+
   button.send {
     background: linear-gradient(135deg, var(--accent), var(--accent-sec));
+    background-size: 200% auto;
     color: #fff; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 500;
     padding: 16px 36px; cursor: pointer; border: none; border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+    transition: transform 0.3s, filter 0.3s, box-shadow 0.3s;
   }
-  button.send:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
-  button.send:disabled { background: #334155; cursor: not-allowed; }
+  button.send:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 25px rgba(99,102,241,0.45);
+    animation: shimmer 1.5s linear infinite;
+    background: linear-gradient(135deg, var(--accent), var(--accent-sec), #a78bfa, var(--accent));
+    background-size: 200% auto;
+  }
+  button.send:disabled { background: #334155; cursor: not-allowed; animation: none; }
 
-  aside.dashboard { display: flex; flex-direction: column; gap: 20px; padding-bottom: 48px; }
+  aside.dashboard {
+    display: flex; flex-direction: column; gap: 20px; padding-bottom: 48px;
+    opacity: 0;
+    animation: fadeLeft 0.8s cubic-bezier(0.22,1,0.36,1) 0.5s forwards;
+  }
   .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+  .widget {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .widget:hover {
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+  }
   .widget.full { grid-column: 1 / -1; }
   .widget-header { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
 
   .mood-chart { display: flex; align-items: flex-end; gap: 10px; height: 100px; padding-bottom: 5px; }
-  .mood-bar { flex: 1; background: rgba(255,255,255,0.05); border-radius: 8px; position: relative; height: 100%; }
-  .mood-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, var(--accent-sec), var(--accent)); border-radius: 8px; transition: height 0.6s ease; }
-  .mood-bar[data-score="low"] .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); }
+  .mood-bar { flex: 1; background: rgba(255,255,255,0.05); border-radius: 8px; position: relative; height: 100%; overflow: hidden; }
+  .mood-bar-fill {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, var(--accent-sec), var(--accent));
+    border-radius: 8px;
+    transition: height 0.8s cubic-bezier(0.34,1.56,0.64,1);
+    transform-origin: bottom;
+  }
+  .mood-bar[data-score="low"]  .mood-bar-fill { background: linear-gradient(to top, #be123c, var(--danger)); }
   .mood-bar[data-score="high"] .mood-bar-fill { background: linear-gradient(to top, #059669, var(--safe)); }
 
-  .memory-stat .num { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 600; color: var(--accent); }
+  .memory-stat .num {
+    font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 600; color: var(--accent);
+    display: inline-block;
+    animation: scaleIn 0.5s ease 1s both;
+  }
   .pattern-tag { display: flex; align-items: center; gap: 10px; font-size: 14px; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; }
 
-  .ai-response { display: none; background: rgba(30, 38, 50, 0.4); border-left: 4px solid var(--accent); border-radius: var(--radius-md); padding: 32px; margin-top: 20px; }
-  .ai-response.visible { display: block; }
+  .ai-response {
+    display: none;
+    background: rgba(30,38,50,0.4);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    margin-top: 20px;
+  }
+  .ai-response.visible {
+    display: block;
+    animation: fadeUp 0.5s ease forwards;
+  }
   .ai-text { font-size: 16px; line-height: 1.8; white-space: pre-line; }
 
-  .history-item { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; padding: 24px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); cursor: pointer; margin-top: 12px; transition: 0.3s; }
-  .history-item:hover { background: rgba(40, 48, 65, 0.6); transform: translateX(5px); }
-  .history-emoji { font-size: 28px; background: rgba(255,255,255,0.03); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .history-section h2 {
+    opacity: 0;
+    animation: fadeUp 0.6s ease 1s forwards;
+  }
+
+  .history-item {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 20px;
+    align-items: center; padding: 24px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer; margin-top: 12px;
+    transition: background 0.3s, transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .history-item:hover {
+    background: rgba(40,48,65,0.6);
+    transform: translateX(5px);
+    border-color: rgba(129,140,248,0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .history-emoji {
+    font-size: 28px; background: rgba(255,255,255,0.03);
+    width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+  .history-item:hover .history-emoji { transform: scale(1.1) rotate(5deg); }
   .history-text { font-size: 15px; color: var(--text-main); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
   .history-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 </style>
 </head>
 <body>
+
+<!-- Animated background canvas (particles) -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Floating gradient orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
 
 <div class="layout">
   <header>
@@ -196,12 +386,87 @@
         <div id="patternList"></div>
       </div>
     </div>
-    <!-- Блок AI Profile Analysis удален -->
   </aside>
 </div>
 
 <script>
-const API = ''; 
+/* ── Particle background ─────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = [
+    'rgba(129,140,248,',   // indigo
+    'rgba(192,132,252,',   // purple
+    'rgba(99,102,241,',    // violet
+    'rgba(167,139,250,',   // lavender
+  ];
+
+  const particles = Array.from({length: 55}, () => makeParticle());
+
+  function makeParticle(fromBottom) {
+    return {
+      x:     Math.random() * window.innerWidth,
+      y:     fromBottom ? window.innerHeight + 10 : Math.random() * window.innerHeight,
+      r:     Math.random() * 1.8 + 0.4,
+      alpha: Math.random() * 0.45 + 0.05,
+      vx:    (Math.random() - 0.5) * 0.18,
+      vy:    -(Math.random() * 0.25 + 0.08),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      twinkleSpeed: Math.random() * 0.015 + 0.005,
+      twinklePhase: Math.random() * Math.PI * 2,
+    };
+  }
+
+  let frame = 0;
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+
+    particles.forEach((p, i) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.twinklePhase += p.twinkleSpeed;
+
+      const alphaMod = p.alpha * (0.6 + 0.4 * Math.sin(p.twinklePhase));
+
+      // Soft glow
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.5);
+      grad.addColorStop(0,   p.color + alphaMod + ')');
+      grad.addColorStop(0.5, p.color + (alphaMod * 0.4) + ')');
+      grad.addColorStop(1,   p.color + '0)');
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + (alphaMod * 1.4) + ')';
+      ctx.fill();
+
+      // Reset when out of bounds
+      if (p.y < -10 || p.x < -20 || p.x > canvas.width + 20) {
+        particles[i] = makeParticle(true);
+        particles[i].x = Math.random() * canvas.width;
+      }
+    });
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ── App logic ───────────────────────────────────────────────── */
+const API = '';
 let history = [];
 
 try {
@@ -214,17 +479,19 @@ function escapeHtml(str) {
 
 (function init() {
   const now = new Date();
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('currentDate').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
-  
+
   const container = document.getElementById('multiDayContainer');
   const jsDay = now.getDay();
   const adjustedDay = jsDay === 0 ? 6 : jsDay - 1;
-  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const weekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-  for(let i = 0; i <= adjustedDay; i++) {
+  for (let i = 0; i <= adjustedDay; i++) {
     const div = document.createElement('div');
-    div.className = 'day-wrapper';
+    div.className = 'day-wrapper animate-in';
+    // Staggered entrance: 0.55s base + 0.12s per card
+    div.style.animationDelay = `${0.55 + i * 0.12}s`;
     div.innerHTML = `
       <div class="day-label">${weekDays[i]} ${i===adjustedDay ? '<span style="opacity:0.4">(Today)</span>':''}</div>
       <textarea class="day-input" data-day="${weekDays[i]}" placeholder="What happened on ${weekDays[i]}?"></textarea>
@@ -238,14 +505,14 @@ async function submitEntry() {
   const inputs = document.querySelectorAll('.day-input');
   let text = '';
   inputs.forEach(i => { if(i.value.trim()) text += `--- ${i.dataset.day} ---\n${i.value}\n\n`; });
-  if(!text) return;
+  if (!text) return;
 
   const btn = document.getElementById('sendBtn');
   btn.disabled = true; btn.textContent = 'Processing...';
 
   try {
     const r = await fetch(`${API}/api/entry`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({text})
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({text})
     });
     const data = await r.json();
 
@@ -253,9 +520,13 @@ async function submitEntry() {
     history.unshift(entry);
     localStorage.setItem('diary_history', JSON.stringify(history));
 
+    const aiResp = document.getElementById('aiResponse');
     document.getElementById('aiText').innerHTML = data.response.split('\n\n').map(p => `<p>${p}</p>`).join('');
-    document.getElementById('aiResponse').classList.add('visible');
-    
+    aiResp.style.display = 'none';
+    aiResp.classList.remove('visible');
+    void aiResp.offsetWidth; // reflow to restart animation
+    aiResp.classList.add('visible');
+
     inputs.forEach(i => i.value = '');
     updateUI();
   } catch(e) {
@@ -271,24 +542,26 @@ function updateUI() {
   renderHistory();
   updateMoodChart();
   updatePatterns();
-  // Вызов loadProfile удален
 }
 
 function updateMoodChart() {
   const bars = document.querySelectorAll('.mood-bar-fill');
   bars.forEach(b => b.style.height = '0%');
-  
+
   const last7 = [...history].slice(0, 7).reverse();
   const startAt = 7 - last7.length;
 
   last7.forEach((item, i) => {
     const score = item.mood?.score || 0;
     const bar = bars[startAt + i];
-    if(bar) {
-      bar.style.height = `${score * 10}%`;
+    if (bar) {
+      // Delay each bar for a wave effect
+      setTimeout(() => {
+        bar.style.height = `${score * 10}%`;
+      }, 200 + i * 80);
       const parent = bar.parentElement;
-      if(score <= 4) parent.dataset.score = 'low';
-      else if(score >= 7) parent.dataset.score = 'high';
+      if (score <= 4) parent.dataset.score = 'low';
+      else if (score >= 7) parent.dataset.score = 'high';
       else parent.removeAttribute('data-score');
     }
   });
@@ -297,13 +570,13 @@ function updateMoodChart() {
 function renderHistory() {
   const container = document.getElementById('historyList');
   document.getElementById('memoryCount').textContent = history.length;
-  if(!history.length) return;
+  if (!history.length) return;
 
   container.innerHTML = history.map((item, i) => {
     const d = new Date(item.timestamp);
-    const clean = item.text.replace(/---.*?---/g, '').replace(/\n/g, ' ').trim().slice(0, 60);
+    const clean = item.text.replace(/---.*?---/g,'').replace(/\n/g,' ').trim().slice(0, 60);
     return `
-      <div class="history-item" onclick="window.expandHistory(${i})">
+      <div class="history-item" style="animation-delay:${0.05 + i * 0.07}s" onclick="window.expandHistory(${i})">
         <div class="history-emoji">${item.mood?.emoji || '📓'}</div>
         <div>
           <div class="history-text">${escapeHtml(clean)}...</div>
@@ -317,25 +590,34 @@ function renderHistory() {
 
 window.expandHistory = (i) => {
   const item = history[i];
-  document.getElementById('aiText').innerHTML = `<div style="margin-bottom:20px; color:var(--text-muted); font-style:italic">Your entry: ${escapeHtml(item.text.slice(0,200))}...</div>` + 
+  const aiResp = document.getElementById('aiResponse');
+  document.getElementById('aiText').innerHTML =
+    `<div style="margin-bottom:20px; color:var(--text-muted); font-style:italic">Your entry: ${escapeHtml(item.text.slice(0,200))}...</div>` +
     item.response.split('\n\n').map(p => `<p>${p}</p>`).join('');
-  document.getElementById('aiResponse').classList.add('visible');
+  aiResp.style.display = 'none';
+  aiResp.classList.remove('visible');
+  void aiResp.offsetWidth;
+  aiResp.classList.add('visible');
   window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
 function updatePatterns() {
   const list = document.getElementById('patternList');
   const allTags = history.flatMap(h => h.mood?.tags || []);
-  const counts = {}; allTags.forEach(t => counts[t] = (counts[t] || 0) + 1);
-  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 2);
-  
-  list.innerHTML = top.length ? top.map(([tag]) => `<div class="pattern-tag"><span>💡</span> ${tag}</div>`).join('') : '<div style="font-size:12px; opacity:0.5">Need more entries...</div>';
+  const counts = {}; allTags.forEach(t => counts[t] = (counts[t]||0) + 1);
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,2);
+  list.innerHTML = top.length
+    ? top.map(([tag]) => `<div class="pattern-tag"><span>💡</span> ${tag}</div>`).join('')
+    : '<div style="font-size:12px; opacity:0.5">Need more entries...</div>';
 }
 
 async function checkHealth() {
   try {
     const r = await fetch(`${API}/api/health`); const d = await r.json();
-    if(d.status==='ok') { document.getElementById('statusDot').classList.add('online'); document.getElementById('statusText').textContent='Secure connection'; }
+    if (d.status==='ok') {
+      document.getElementById('statusDot').classList.add('online');
+      document.getElementById('statusText').textContent = 'Secure connection';
+    }
   } catch(e) {}
 }
 checkHealth();
